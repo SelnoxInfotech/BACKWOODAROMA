@@ -1,5 +1,6 @@
 {
   "name": "backwoodaroma_admin",
+  "home" : "selnox.store",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
