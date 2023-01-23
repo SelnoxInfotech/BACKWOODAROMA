@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-
+import React from 'react';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -10,10 +9,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Cookies from 'universal-cookie';
 import Axios from "axios"
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { MdFileUpload } from 'react-icons/md';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import Checkbox from '@mui/material/Checkbox';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -27,26 +23,23 @@ function BootstrapDialogTitle(props) {
 
 }
 export default function Couponpopup() {
-
     const [open, setOpen] = React.useState(false);
-    const [expires, Setexpires] = React.useState("");
-
+    const [expires, Setexpires] = React.useState('');
+    const [bound, Setbound] = React.useState(false);
     const [Coupon, SetCoupon] = React.useState({
-        bound: false,
         code: "",
         code_l: "",
-       
         percentage: "",
         repeat: "",
         type: "percent"
     });
 
- const handledate = (newValue) => {
-    Setexpires(newValue.$d.slice(0,15));
-    
-    //
-  };
-  console.log(expires)
+    const handledate = (e) => {
+        Setexpires(e.target.value);
+    };
+    const handleChangeCheckbox = () => {
+        Setbound(bound => !bound);
+      };
 
     const handleChange = (event) => {
         const value = event.target.value
@@ -55,9 +48,6 @@ export default function Couponpopup() {
             [event.target.name]: value
         });
     }
-
-
-
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -77,17 +67,25 @@ export default function Couponpopup() {
         const config = {
             headers: { Authorization: `Bearer ${token_data}` }
         };
-
+      const data = {
+        expires:expires,
+        bound: bound,
+        code: Coupon.code,
+        code_l: Coupon.code_l,
+        percentage: Coupon.percentage,
+        repeat:  Coupon.repeat,
+        type: Coupon.type
+      }
 
         Axios.post(
             'http://34.201.114.126:8000/AdminPanel/CouponViewSet/',
+            data,
             config
         ).then(() => {
             setOpen(false);
         })
     };
-
-
+  
     return (
         <div>
 
@@ -129,7 +127,7 @@ export default function Couponpopup() {
                                         </label>
                                     </div>
                                     <div className='col-10 '>
-                                        <TextField type="text" placeholder='Add code' id="outlined-basic" variant="outlined" style={{ minWidth: 190, fontSize: 15 }}
+                                        <TextField type="text" placeholder='Add code' id="outlined-basic" name='code' value={Coupon.code} variant="outlined" style={{ minWidth: 190, fontSize: 15 }}
                                             onChange={handleChange} />
                                     </div>
                                 </div>
@@ -140,7 +138,7 @@ export default function Couponpopup() {
                                         </label>
                                     </div>
                                     <div className='col-10 '>
-                                        <TextField type="text" placeholder='Add  code L' id="outlined-basic" variant="outlined" style={{ minWidth: 190, fontSize: 15 }}
+                                        <TextField type="text" placeholder='Add  code L' value={Coupon.code_l} name="code_l" id="outlined-basic" variant="outlined" style={{ minWidth: 190, fontSize: 15 }}
                                             onChange={handleChange} />
                                     </div>
                                 </div>
@@ -155,11 +153,8 @@ export default function Couponpopup() {
                                             value={Coupon.type}
                                             name="type"
                                             onChange={handleChange}
-
                                             inputProps={{ 'aria-label': 'Without label' }} style={{ minWidth: 190, fontSize: 15, background: "#AAAAAA" }}
                                         >
-
-
                                             <MenuItem value={"percent"} style={{ fontSize: 15 }}>Persent</MenuItem>
                                             <MenuItem value={"value"} style={{ fontSize: 15 }}>Value</MenuItem>
 
@@ -173,15 +168,20 @@ export default function Couponpopup() {
                                         </label>
                                     </div>
                                     <div className='col-10 '>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DesktopDatePicker
-                                            inputFormat="MM/DD/YYYY"
-
-                                           value={expires}
+                                        <TextField
+                                            id="date"
+                                            value={expires}
+                                            name=  "expires"
                                             onChange={handledate}
-                                            renderInput={(params) => <TextField {...params} />}
-                                        />
-                                         </LocalizationProvider>
+                                            type="datetime-local"
+                                            inputProps={{
+                                                min: new Date().toISOString().slice(0, 16)
+                                              }}
+                                            sx={{ width: 190 ,fontSize:25 }}
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            ></TextField>
                                     </div>
                                 </div>
                                 <div className='col-12 top  Add_Category_pop '>
@@ -191,7 +191,7 @@ export default function Couponpopup() {
                                         </label>
                                     </div>
                                     <div className='col-10 '>
-                                        <TextField type="number" placeholder='Add Percentage' id="outlined-basic" variant="outlined" style={{ minWidth: 190, fontSize: 15 }}
+                                        <TextField type="number" placeholder='Add Percentage' value={Coupon.percentage} name="percentage" id="outlined-basic" variant="outlined" style={{ minWidth: 190, fontSize: 15 }}
                                             onChange={handleChange} />
                                     </div>
                                 </div>
@@ -202,13 +202,14 @@ export default function Couponpopup() {
                                         </label>
                                     </div>
                                     <div className='col-10 '>
-                                        <TextField type="number" placeholder='Add Alt Text' id="outlined-basic" variant="outlined" style={{ minWidth: 190, fontSize: 15 }}
+                                        <TextField type="number" placeholder='Repeat ' value={Coupon.repeat} name="repeat" id="outlined-basic" variant="outlined" style={{ minWidth: 190, fontSize: 15 }}
                                             onChange={handleChange} />
                                     </div>
                                 </div>
                                 <div className='col-12 top  Add_Category_pop '>
                                     <div className='col-2 center'>
-                                        <input type="checkbox" />
+                                   
+                                        <Checkbox    defaultChecked={false}    value={bound}  name="bound" onChange={handleChangeCheckbox}  />
                                     </div>
                                     <div className='col-10 '>
                                         <label >

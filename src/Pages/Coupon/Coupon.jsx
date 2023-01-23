@@ -9,6 +9,10 @@ import { createTheme } from "@mui/material/styles";
 import axios from "axios";
 import Cookies from 'universal-cookie';
 import Couponpopup from "./Couponpop"
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select'; 
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import CouponDelete from './CouponDelete';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -55,7 +59,19 @@ export default function Coupon() {
             renderCell: (params) => <span dangerouslySetInnerHTML={{ __html: params.formattedValue }} />
         },
         { field: 'bound', headerName: 'Bound', type: 'text', editable: true, width: 90, headerClassName: 'super-app-theme--header' },
-        { field: 'Edit', headerName: 'Edit', type: 'button', editable: true, headerClassName: 'super-app-theme--header' },
+        { field: 'Edit', headerName: 'Edit', type: 'button', editable: true, headerClassName: 'super-app-theme--header',
+        renderCell: (params) => (
+            <>
+                <Box >
+                    <Select IconComponent={BsThreeDotsVertical} labelId="demo-simple-select-error-label">
+                        <MenuItem > <CouponDelete data={params.row}></CouponDelete> </MenuItem>
+                       
+                    </Select>
+                </Box>
+            </>
+
+        )
+    },
 
     ];
 

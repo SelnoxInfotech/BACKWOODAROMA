@@ -12,7 +12,7 @@ import Axios from "axios"
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
+import Checkbox from '@mui/material/Checkbox';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -27,28 +27,26 @@ function BootstrapDialogTitle(props) {
 
 }
 export default function GiftVoucherpopup() {
-
+    const [bound, Setbound] = React.useState(false);
     const [open, setOpen] = React.useState(false);
-    const [Status, setStatus] = React.useState('');
-    const [tax, settaxs] = React.useState([]);
-    const [type, settype] = React.useState([]);
-    const [value, setValue] = React.useState(new Date());
+    const [expires, Setexpires] = React.useState('');
+    const [Gift_Voucher , SetGift_Voucher] = React.useState({
+       
+        percentage:"",
+        repeat : "",
+        type :"percent"
 
-    const handleChange = (newValue) => {
-      setValue(newValue);
-    };    
-    const handleStatus = (event) => {
-        setStatus(event.target.value);
-    };
+    })
 
-
-
-    const handleName = (event) => {
-        settaxs(event.target.value);
-
-    };
-    const handleTex = (event) => {
-        settype(event.target.value.toUpperCase());
+    const handleChange = (event) => {
+        const value = event.target.value
+        SetGift_Voucher({
+            ...Gift_Voucher,
+            [event.target.name]: value
+        });
+    }
+    const handledate = (e) => {
+        Setexpires(e.target.value);
     };
 
     const handleClickOpen = () => {
@@ -58,7 +56,9 @@ export default function GiftVoucherpopup() {
     const handleClose = () => {
         setOpen(false);
     };
-
+    const handleChangeCheckbox = () => {
+        Setbound(bound => !bound);
+      };
 
 
     const Submit = () => {
@@ -71,12 +71,14 @@ export default function GiftVoucherpopup() {
         };
 
         const data = {
-            "tax_value": tax,
-            "tax_type": type,
-            "Status": Status
+            bound:bound,
+            expires:expires,
+            percentage:parseInt(Gift_Voucher.percentage),
+            repeat :parseInt( Gift_Voucher.repeat),
+            type :Gift_Voucher.type
         }
         Axios.post(
-            'http://34.201.114.126:8000/AdminPanel/Add-Tax/',
+            'http://34.201.114.126:8000/AdminPanel/GiftVoucherViewSet/',
             data,
             config
         ).then(() => {
@@ -126,8 +128,8 @@ export default function GiftVoucherpopup() {
                                         </label>
                                     </div>
                                     <div className='col-10 '>
-                                        <TextField type="number" placeholder='Add code' id="outlined-basic" variant="outlined" value={tax} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleName} />
+                                        <TextField type="number" placeholder='Add code' id="outlined-basic" variant="outlined"  style={{ minWidth: 190, fontSize: 15 }}
+                                            onChange={handleChange} />
                                     </div>
                                 </div>
                                 <div className='col-12 top  Add_Category_pop  '>
@@ -137,8 +139,16 @@ export default function GiftVoucherpopup() {
                                         </label>
                                     </div>
                                     <div className='col-10 '>
-                                        <TextField type="number" placeholder='Add  code L' id="outlined-basic" variant="outlined" value={tax} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleName} />
+                                    <Select
+                                            value={Gift_Voucher.type}
+                                            name="type"
+                                            onChange={handleChange}
+                                            inputProps={{ 'aria-label': 'Without label' }} style={{ minWidth: 190, fontSize: 15, background: "#AAAAAA" }}
+                                        >
+                                            <MenuItem value={"percent"} style={{ fontSize: 15 }}>Persent</MenuItem>
+                                            <MenuItem value={"value"} style={{ fontSize: 15 }}>Value</MenuItem>
+
+                                        </Select>
                                     </div>
                                 </div>
                                 <div className='col-12 top   Add_Category_pop'>
@@ -148,43 +158,23 @@ export default function GiftVoucherpopup() {
                                         </label>
                                     </div>
                                     <div className='col-10 '>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DesktopDatePicker
-                                        
-                                            inputFormat="MM/DD/YYYY"
-                                            value={value}
-                                            onChange={handleChange}
-                                            renderInput={(params) => <TextField {...params} 
-                                            style={{ minWidth: 190, fontSize: "20px" , background: "#AAAAAA" }}
-                                            />
-                                            
-                                        }
-                                        />
-                                        </LocalizationProvider>
+                                    <TextField
+                                            id="date"
+                                            value={expires}
+                                            name=  "expires"
+                                            onChange={handledate}
+                                            type="datetime-local"
+                                            inputProps={{
+                                                min: new Date().toISOString().slice(0, 16)
+                                              }}
+                                            sx={{ width: 190 ,fontSize:25 }}
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            ></TextField>
                                     </div>
                                 </div>
-                                <div className='col-12 top  Add_Category_pop '>
-                                    <div className='col-2'>
-                                        <label className=''>
-                                            Expires Time:
-                                        </label>
-                                    </div>
-                                    <div className='col-10 '>
-                                        <Select
-                                            value={Status}
-                                            onChange={handleStatus}
-                                            displayEmpty
-                                            inputProps={{ 'aria-label': 'Without label' }} style={{ minWidth: 190, fontSize: 15, background: "#AAAAAA" }}
-                                        >
-                                            <MenuItem value="" style={{ fontSize: 15 }}>
-                                                <em>Select option</em>
-                                            </MenuItem>
-                                            <MenuItem value={"Active"} style={{ fontSize: 15 }}>Active</MenuItem>
-                                            <MenuItem value={"Hide"} style={{ fontSize: 15 }}>Hide</MenuItem>
-
-                                        </Select>
-                                    </div>
-                                </div>
+                           
                                 <div className='col-12 top  Add_Category_pop '>
                                     <div className='col-2'>
                                         <label className=''>
@@ -192,21 +182,11 @@ export default function GiftVoucherpopup() {
                                         </label>
                                     </div>
                                     <div className='col-10 '>
-                                        <TextField type="number" placeholder='Add Percentage' id="outlined-basic" variant="outlined" value={tax} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleName} />
+                                        <TextField type="number" placeholder='Add Percentage' name='percentage' value={Gift_Voucher.percentage} id="outlined-basic" variant="outlined" style={{ minWidth: 190, fontSize: 15 }}
+                                            onChange={handleChange} />
                                     </div>
                                 </div>
-                                <div className='col-12 top  Add_Category_pop '>
-                                    <div className='col-2'>
-                                        <label >
-                                            code:
-                                        </label>
-                                    </div>
-                                    <div className='col-10 '>
-                                        <TextField type="number" placeholder='Add Alt Text' id="outlined-basic" variant="outlined" value={tax} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleName} />
-                                    </div>
-                                </div>
+                               
                                 <div className='col-12 top  Add_Category_pop '>
                                     <div className='col-2'>
                                         <label >
@@ -214,18 +194,20 @@ export default function GiftVoucherpopup() {
                                         </label>
                                     </div>
                                     <div className='col-10 '>
-                                        <TextField type="number" placeholder='Add Alt Text' id="outlined-basic" variant="outlined" value={tax} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleName} />
+                                        <TextField type="number" placeholder='Add repeat' id="outlined-basic" variant="outlined" name='repeat' value={Gift_Voucher.repeat} style={{ minWidth: 190, fontSize: 15 }}
+                                            onChange={handleChange} />
                                     </div>
                                 </div>
                                 <div className='col-12 top  Add_Category_pop '>
-                                    <div className='col-2 center'>
-                                        <input type="checkbox" />
-                                    </div>
-                                    <div className='col-10 '>
-                                        <label >
+                                    <div className='col-2 '>
+                                    <label >
                                             Bound
                                         </label>
+                                    </div>
+                                    <div className='col-10 '>
+                                        
+                                        
+                                    <Checkbox    defaultChecked={false}    value={bound}  name="bound" onChange={handleChangeCheckbox}  />
                                     </div>
                                 </div>
                                 <div className='col-12 center top' >

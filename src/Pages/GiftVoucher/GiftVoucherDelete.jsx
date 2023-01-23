@@ -11,12 +11,11 @@ import Cookies from 'universal-cookie';
 import Createcontext from "../../Hooks/Context/Context"
 import { useSnackbar } from 'notistack';
 
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function BrandDelete (props) {
+export default function GiftDelete(props) {
   const { enqueueSnackbar } = useSnackbar();
   const { dispatch} = useContext(Createcontext)
     const cookies = new Cookies();
@@ -29,9 +28,10 @@ export default function BrandDelete (props) {
   const handleClose = () => {
     setOpen(false);
   };
-
+  
   const Delete = () => {
-       axios.delete(`http://34.201.114.126:8000/AdminPanel/delete-Brand/${props.data.id}`, {
+    const id = props.data.id
+       axios.delete(`http://34.201.114.126:8000/AdminPanel/DeleteGiftvoucher/${id}`, {
 
            headers: {
                'Authorization': `Bearer ${token_data}`
@@ -39,7 +39,7 @@ export default function BrandDelete (props) {
        }).then(response => {
         setOpen(false);
         dispatch({type:'api',api: true})
-        enqueueSnackbar('Delete State success !', { variant: 'success' });
+        enqueueSnackbar('Coupon Delete success !', { variant: 'success' });
        })
    };
 
@@ -55,10 +55,10 @@ export default function BrandDelete (props) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Brand Delete ?"}</DialogTitle>
+        <DialogTitle>{"Delete Gift?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-          Are you sure you want to delete this Brand?
+          Are you sure you want to delete this item?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

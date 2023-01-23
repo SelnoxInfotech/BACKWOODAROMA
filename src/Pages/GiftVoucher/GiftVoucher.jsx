@@ -8,7 +8,11 @@ import { ThemeProvider } from "@mui/material/styles";
 import { createTheme } from "@mui/material/styles";
 import axios from "axios";
 import Cookies from 'universal-cookie';
-import GiftVoucherpopup from "./GiftVoucherpopup"
+import DeleteGift from './GiftVoucherDelete'
+import GiftVoucherpopup from './GiftVoucherpopup';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select'; 
+import { BsThreeDotsVertical } from 'react-icons/bs';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -25,7 +29,7 @@ export default function Gift_Voucher() {
     const token_data = cookies.get('Token_access')
     const [totel, setTotal] = React.useState([])
     React.useEffect(() => {
-        axios("http://34.201.114.126:8000/AdminPanel/Get-GiftVoucher/", {
+        axios("http://34.201.114.126:8000/AdminPanel/GiftVoucherViewSet/", {
 
             headers: {
                 'Authorization': `Bearer ${token_data}`
@@ -43,18 +47,30 @@ export default function Gift_Voucher() {
       }, []);
     const columns = [
         {
-            field: 'Image', headerName: 'User', editable: true, headerClassName: 'super-app-theme--header', width: 120,
-            renderCell: (params) => <img src={"http://34.201.114.126:8000/" + params.value} alt="Alt_Text" width="35" height="30" />,
+            field: 'User', headerName: 'User', editable: true, headerClassName: 'super-app-theme--header', width: 120,
         },
-        { field: 'Title', headerName: 'Type', editable: true, headerClassName: 'super-app-theme--header', width: 120 },
+        { field: 'type', headerName: 'Type', editable: true, headerClassName: 'super-app-theme--header', width: 120 },
 
-        { field: 'Link', headerName: 'Expire', type: 'text', editable: true, headerClassName: 'super-app-theme--header', width: 150 },
+        { field: 'expires', headerName: 'Expire', type: 'text', editable: true, headerClassName: 'super-app-theme--header', width: 150 },
         {
-            field: 'Brand_description', headerName: 'Code', type: 'text', editable: true, width: 180, headerClassName: 'super-app-theme--header',
+            field: 'code', headerName: 'Code', type: 'text', editable: true, width: 180, headerClassName: 'super-app-theme--header',
             renderCell: (params) => <span dangerouslySetInnerHTML={{ __html: params.formattedValue }} />
         },
-        { field: 'Status', headerName: 'Bound', type: 'text', editable: true, width: 90, headerClassName: 'super-app-theme--header' },
-        { field: 'Edit', headerName: 'Edit', type: 'button', editable: true, headerClassName: 'super-app-theme--header' },
+        { field: 'bound', headerName: 'Bound', type: 'text', editable: true, width: 90, headerClassName: 'super-app-theme--header' },
+        { field: 'Edit', headerName: 'Edit', type: 'button', editable: true, headerClassName: 'super-app-theme--header' ,
+        renderCell: (params) => (
+            <>
+                <Box >
+                    <Select IconComponent={BsThreeDotsVertical} labelId="demo-simple-select-error-label">
+                        <MenuItem > <DeleteGift data={params.row}></DeleteGift> </MenuItem>
+                       
+                    </Select>
+                </Box>
+            </>
+
+        )
+    
+    },
 
     ];
 

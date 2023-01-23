@@ -5,8 +5,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 import Cookies from 'universal-cookie';
 import Axios from "axios"
 import Createcontext from "../../Hooks/Context/Context"
@@ -142,7 +140,7 @@ export default function FlavoursEdit(props) {
                                     </div>
                                     <div className='col'>
                                       {
-                                        image ?<img src={URL.createObjectURL(image)} alt="" style={{ width: "120px", height: "110px" }} /> :<img src={ "http://34.201.114.126:8000/" + Flavour.FlavoursImage } style={{ width: "120px", height: "110px" }}/>
+                                        image ?<img src={URL.createObjectURL(image)} alt="" style={{ width: "120px", height: "110px" }} /> :<img src={ "http://34.201.114.126:8000/" + Flavour.FlavoursImage } alt="" style={{ width: "120px", height: "110px" }}/>
                                       }
                                       <input  type="file" id="formFile" accept="image/*" inputProps={{ style: { fontSize: 15 } }} variant="outlined" style={{ Width: "10%", fontSize: 15 }}
                                          onChange={handleimage}

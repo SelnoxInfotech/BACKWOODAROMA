@@ -6,8 +6,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 import Cookies from 'universal-cookie';
 import Createcontext from "../../../Hooks/Context/Context"
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({

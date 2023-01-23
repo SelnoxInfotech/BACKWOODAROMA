@@ -22,6 +22,7 @@ import Coupon from "../Pages/Coupon/Coupon"
 import  GiftVoucher from "../Pages/GiftVoucher/GiftVoucher"
 import NewsCategory from "../Pages/News/NewsCategory/NewsCategory"
 import NewsSubCategory from "../Pages/News/NewsSubCategory/NewsSubCategory"
+import Pagenotfound from "../Pages/Pagenotfound"
 export default function Router() {
  
  
@@ -31,27 +32,28 @@ export default function Router() {
 
       <BrowserRouter >
         <Navbar></Navbar>
-        <Routes>
-         <Route   path="/Login" element={<Protected Component={Loginlogout } />}/>
+        <Routes >
+         <Route  path="/Login" element={<Protected Component={Loginlogout } />}/>
          <Route exact path="/" element={<Protected Component={Home } />} /> 
-         <Route path="/category" element={<Protected Component={Category } />} /> 
-         <Route path="/subCategory" element={<Protected Component={SubCategory } />} /> 
-         <Route path="/Countries" element={<Protected Component={countries} />} /> 
-         <Route path="/States" element={<Protected Component={State} />} /> 
-         <Route path="/City" element={<Protected Component={City} />} /> 
-         <Route path="/Tax" element={<Protected Component={Tax} />} /> 
-         <Route path="/Discount" element={<Protected Component={Discount} />} /> 
-         <Route path="/Flavour" element={<Protected Component={Flavour} />} /> 
-         <Route path="/Netweight" element={<Protected Component={Netweight} />} /> 
-         <Route path="/Store" element={<Protected Component={Store} />} />   
-         <Route path="/Brand" element={<Protected Component={Brand} />} />   
-         <Route path="/Product" element={<Protected Component={Product} />} /> 
-        <Route path="/News" element ={<Protected Component ={News}/>}/>
-         <Route path="/NewsCategory" element ={<Protected Component ={NewsCategory}/>}/>
-         <Route path="/NewsSubCategory" element ={<Protected Component ={NewsSubCategory}/>}/>
-        <Route path="/Coupon" element ={<Protected Component ={Coupon}/>}/>
-        <Route path="/GiftVoucher" element = {<Protected Component = {GiftVoucher} />} />
-        <Route path='/Forgot' element={<Forgot />}/>
+         <Route  path="/category" element={<Protected Component={Category } />} /> 
+         <Route   path="/subCategory" element={<Protected Component={SubCategory } />} /> 
+         <Route  path="/Countries" element={<Protected Component={countries} />} /> 
+         <Route  path="/States" element={<Protected Component={State} />} /> 
+         <Route  path="/City" element={<Protected Component={City} />} /> 
+         <Route  path="/Tax" element={<Protected Component={Tax} />} /> 
+         <Route  path="/Discount" element={<Protected Component={Discount} />} /> 
+         <Route  path="/Flavour" element={<Protected Component={Flavour} />} /> 
+         <Route  path="/Netweight" element={<Protected Component={Netweight} />} /> 
+         <Route  path="/Store" element={<Protected Component={Store} />} />   
+         <Route  path="/Brand" element={<Protected Component={Brand} />} />   
+         <Route  path="/Product" element={<Protected Component={Product} />} /> 
+        <Route  path="/News" element ={<Protected Component ={News}/>}/>
+         <Route  path="/NewsCategory" element ={<Protected Component ={NewsCategory}/>}/>
+         <Route  path="/NewsSubCategory" element ={<Protected Component ={NewsSubCategory}/>}/>
+        <Route  path="/Coupon" element ={<Protected Component ={Coupon}/>}/>
+        <Route  path="/GiftVoucher" element = {<Protected Component = {GiftVoucher} />} />
+        <Route  path='/Forgot' element={<Forgot />}/>
+        <Route path='*' element={ <Pagenotfound></Pagenotfound>} />
        
         </Routes>
       </BrowserRouter>

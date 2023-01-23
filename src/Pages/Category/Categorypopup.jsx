@@ -63,13 +63,14 @@ export default function Categorypopup() {
             dispatch({type:'api',api: true})
         }).catch(
             function (error) {
-                const arry = error.response.data.data 
-                const map = Object.entries(arry)
-                console.log(map )
-                // map.map(([data , index])=>{
-                //     console.log(data,index )
-                // })
-                
+                const arry = error.response.data 
+                // const map = Object.entries(arry)
+                console.log( arry.name[0])
+                arry.name.map(([data , index])=>{
+                        console.log(data,index )
+                    })
+                    
+
                 return Promise.reject(error)
             }
         )

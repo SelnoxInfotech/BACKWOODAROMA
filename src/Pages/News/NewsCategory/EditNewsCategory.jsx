@@ -6,8 +6,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import TextField from '@mui/material/TextField';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 import { useSnackbar } from 'notistack';
 import Createcontext from "../../../Hooks/Context/Context"
 export default function NewsCategoryEditbox(props) {
