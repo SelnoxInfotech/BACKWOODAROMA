@@ -10,6 +10,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Cookies from 'universal-cookie';
 import Axios from "axios"
 import Createcontext from "../../Hooks/Context/Context"
+import { useSnackbar } from 'notistack';
+
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -17,16 +19,24 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
     },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+          borderWidth: "1px",
+          borderColor: 'black',
+        },
+  },
 }));
 
 function BootstrapDialogTitle() {
 
 }
 export default function CountriesPopUp() {
+    const { enqueueSnackbar } = useSnackbar();
     const { dispatch} = useContext(Createcontext)
     const [open, setOpen] = React.useState(false);
-    const [Status, setStatus] = React.useState('');
-    const [Namecountries, setNamecountries] = React.useState([]);
+    const [Status, setStatus] = React.useState('Active');
+    const [Namecountries, setNamecountries] = React.useState('');
+    const [error , seterror] = React.useState('') 
     const handleStatus = (event) => {
         setStatus(event.target.value);
     };
@@ -40,6 +50,7 @@ export default function CountriesPopUp() {
     };
     const handleClose = () => {
         setOpen(false);
+        seterror("")
     };
 
 
@@ -64,7 +75,18 @@ export default function CountriesPopUp() {
             dispatch({type:'api',api: true})
             setStatus("")
             setNamecountries("")
-        })
+        }).catch(
+            function (error) {
+                
+                const d = error.response.data.error
+                 const name = d.CountryName[0]
+                seterror("red")
+                enqueueSnackbar( name, { variant: 'error' });
+            
+
+                return Promise.reject(error)
+            }
+        )
     };
 
     return (
@@ -103,12 +125,20 @@ export default function CountriesPopUp() {
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
                                     <label className='label'>
+                                    <span className='required'>*</span>
                                     Country Name:
                                     </label>
                                     </div>
                                   <div className='col'>
-                                  <TextField placeholder='Add   Country Name' id="outlined-basic" variant="outlined"   value={Namecountries } style={{minWidth: 190 , fontSize:15}}
-                                        onChange={handleName} />
+                                  <TextField placeholder='Add Country Name' inputProps={{style: {fontSize: 15}}} id="outlined-basic" variant="outlined"   value={Namecountries } style={{minWidth: 190 , fontSize:15}}
+                                        onChange={handleName}
+                                        sx={{ 
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                  borderColor:error
+                                                },}
+                                        }}
+                                         />
                                   </div>
                                 </div>
                                 <div className='col-12 top label  con'>
@@ -124,14 +154,8 @@ export default function CountriesPopUp() {
                                         onChange={handleStatus}
                                         displayEmpty
                                         inputProps={{ 'aria-label': 'Without label' }} style={{minWidth: 190 , fontSize:15}}>
-                                            <MenuItem value="" disabled style={{ fontSize:15}}>
-                                            <em>Select option</em>
-                                        </MenuItem>
                                         <MenuItem value={"Active"} style={{ fontSize:15}}>Active</MenuItem>
                                         <MenuItem value={"Hide"} style={{ fontSize:15}}>  Hide</MenuItem>
-                                                
-                                            
-                                        
                                     </Select>
                                   </div>
                                 </div>

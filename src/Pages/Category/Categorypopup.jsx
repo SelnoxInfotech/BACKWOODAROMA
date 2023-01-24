@@ -10,6 +10,8 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Cookies from 'universal-cookie';
 import Createcontext from "../../Hooks/Context/Context"
+import { useSnackbar } from 'notistack';
+
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -17,16 +19,33 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
     },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+          borderWidth: "1px",
+          borderColor: 'black',
+        },
+  },
+  '& .MuiButtonBase-root':{
+    fontSize: "1.5625rem",
+    color:"#31B665"
+}
+      
+   
 }));
 
-export default function Categorypopup() {
+
+export default function Categorypopup(props) {
+ 
+    const { enqueueSnackbar } = useSnackbar();
     const { dispatch} = useContext(Createcontext)
     const cookies = new Cookies();
     const token_data = cookies.get('Token_access')
     const [open, setOpen] = React.useState(false);
     const [Category, setCategory] = React.useState('Active');
+   
     const [NameCategory, setNameCategory] = React.useState('');
-
+    const [error , seterror] = React.useState('') 
+    
     const handleChange = (event) => {
         setCategory(event.target.value);
     };
@@ -40,7 +59,11 @@ export default function Categorypopup() {
     };
     const handleClose = () => {
         setOpen(false);
+        seterror("")
     };
+    
+
+
 
     const handlechanges = () => {
 
@@ -59,17 +82,16 @@ export default function Categorypopup() {
         ).then(() => {
             setOpen(false);
             setNameCategory("");
-            setCategory("");
+            setCategory("Active");
             dispatch({type:'api',api: true})
+            seterror("")
         }).catch(
             function (error) {
-                const arry = error.response.data 
-                // const map = Object.entries(arry)
-                console.log( arry.name[0])
-                arry.name.map(([data , index])=>{
-                        console.log(data,index )
-                    })
-                    
+                const d = error.response.data
+                 const name = d.name[0]
+                seterror("red")
+                enqueueSnackbar( name, { variant: 'error' });
+              
 
                 return Promise.reject(error)
             }
@@ -106,12 +128,24 @@ export default function Categorypopup() {
                                 <div className='col-12 top label  con'>
                                     <div className='col'>
                                         <label className='label'>
-                                            Name*:
+                                            <span className='required'>*</span>
+                                            Name:
                                         </label>
                                     </div>
                                     <div className='col'>
-                                        <TextField placeholder='Add Category' id="outlined-basic" variant="outlined" value={NameCategory || ""}
-                                            onChange={handleName} style={{ minWidth: 190, fontSize: 15, }} />
+                                
+                                    <TextField   inputProps={{style: {fontSize: 15}}} placeholder='Add Category' id="outlined-basic"  variant="outlined" value={NameCategory || ""}
+                                            onChange={handleName} 
+                                         
+                                         sx={{ 
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                  borderColor:error
+                                                },}
+                                        }}
+                                            />
+                           
+                                        
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con'>
@@ -121,10 +155,8 @@ export default function Categorypopup() {
                                         </label>
                                     </div>
                                     <div className='col ' >
-                                        <Select value={Category} onChange={handleChange} displayEmpty inputProps={{ 'aria-label': 'Without label', }} style={{ minWidth: 190, fontSize: 15 }} >
-                                            <MenuItem value={Category}>
-
-                                            </MenuItem>
+                                        <Select value={Category} onChange={handleChange} displayEmpty inputProps={{ 'aria-label': 'Without label', }} style={{ minWidth: "11vw", fontSize: 15 }} >
+                                           
                                             <MenuItem value={"Active"} style={{ fontSize: 15 }}>Active</MenuItem>
                                             <MenuItem value={"Hide"} style={{ fontSize: 15 }}>  Hide</MenuItem>
 

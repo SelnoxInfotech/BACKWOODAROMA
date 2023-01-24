@@ -34,9 +34,9 @@ export default function Router() {
         <Navbar></Navbar>
         <Routes >
          <Route  path="/Login" element={<Protected Component={Loginlogout } />}/>
-         <Route exact path="/" element={<Protected Component={Home } />} /> 
+         <Route  exact path="/" element={<Protected Component={Home } />} /> 
          <Route  path="/category" element={<Protected Component={Category } />} /> 
-         <Route   path="/subCategory" element={<Protected Component={SubCategory } />} /> 
+         <Route  path="/subCategory" element={<Protected Component={SubCategory } />} /> 
          <Route  path="/Countries" element={<Protected Component={countries} />} /> 
          <Route  path="/States" element={<Protected Component={State} />} /> 
          <Route  path="/City" element={<Protected Component={City} />} /> 
@@ -47,13 +47,13 @@ export default function Router() {
          <Route  path="/Store" element={<Protected Component={Store} />} />   
          <Route  path="/Brand" element={<Protected Component={Brand} />} />   
          <Route  path="/Product" element={<Protected Component={Product} />} /> 
-        <Route  path="/News" element ={<Protected Component ={News}/>}/>
+         <Route  path="/News" element ={<Protected Component ={News}/>}/>
          <Route  path="/NewsCategory" element ={<Protected Component ={NewsCategory}/>}/>
          <Route  path="/NewsSubCategory" element ={<Protected Component ={NewsSubCategory}/>}/>
-        <Route  path="/Coupon" element ={<Protected Component ={Coupon}/>}/>
-        <Route  path="/GiftVoucher" element = {<Protected Component = {GiftVoucher} />} />
-        <Route  path='/Forgot' element={<Forgot />}/>
-        <Route path='*' element={ <Pagenotfound></Pagenotfound>} />
+        <Route   path="/Coupon" element ={<Protected Component ={Coupon}/>}/>
+        <Route   path="/GiftVoucher" element = {<Protected Component = {GiftVoucher} />} />
+        <Route   path='/Forgot' element={<Forgot />}/>
+        <Route   path='*' element={ <Pagenotfound></Pagenotfound>} />
        
         </Routes>
       </BrowserRouter>

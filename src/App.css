@@ -4,6 +4,9 @@
   font-family: Sans;
  
 }
+.required {
+  color: red;
+}
 
 .color{
   color: #31B665;
@@ -461,7 +464,15 @@ gap: 10px;
   display: flex;
   justify-content: flex-end;
   color: #3C3C3C;
+  align-items: center;
 
+}
+@media (max-width: 500px) {
+  .label {
+    display: contents;
+    
+  
+  }
 }
 .editer{
   background-color: #ecebeb ;

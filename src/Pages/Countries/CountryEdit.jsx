@@ -18,6 +18,12 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
     },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+          borderWidth: "1px",
+          borderColor: 'black',
+        },
+  },
 }));
 
 function BootstrapDialogTitle(props) {
@@ -27,6 +33,7 @@ export default function CountryEdit(props) {
     const { enqueueSnackbar } = useSnackbar();
     const { dispatch } = useContext(Createcontext)
     const [open, setOpen] = React.useState(false);
+    const [error , seterror] = React.useState('') 
     const [Country, SetCountry] = React.useState({
         id: props.data.id, 
         Countryname: props.data.CountryName.toUpperCase(),
@@ -45,6 +52,7 @@ export default function CountryEdit(props) {
     };
     const handleClose = () => {
         setOpen(false);
+        seterror("")
     };
 
     const Submit = () => {
@@ -68,7 +76,17 @@ export default function CountryEdit(props) {
             setOpen(false);
             dispatch({ type: 'api', api: true })
             enqueueSnackbar('Edit Countries success !', { variant: 'success' });
-        })
+        }).catch(
+            function (error) {
+                const d = error.response.data.error
+                 const name = d.CountryName[0]
+                seterror("red")
+                enqueueSnackbar( name, { variant: 'error' });
+              
+
+                return Promise.reject(error)
+            }
+        )
     };
     return (
         <div>
@@ -104,15 +122,23 @@ export default function CountryEdit(props) {
                                     </h2>
                                     </div>
                                 </div>
-                                <div className='col-12 top label  con margn_top '>
+                                <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
-                                            Name:
+                                        <span className='required'>*</span>
+                                        Country Name:
                                         </label>
                                     </div>
                                     <div className='col'>
-                                        <TextField  id="outlined-basic" variant="outlined" name='Countryname' value={Country.Countryname.toUpperCase()} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                        <TextField placeholder='Country'  id="outlined-basic" variant="outlined" name='Countryname' value={Country.Countryname.toUpperCase()} style={{ minWidth: 190, fontSize: 15 }}
+                                            onChange={handleChange}
+                                            sx={{ 
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                      borderColor:error
+                                                    },}
+                                            }}
+                                             />
                                     </div>
                                 </div>
                                 

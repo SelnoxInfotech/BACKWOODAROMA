@@ -20,7 +20,7 @@ function App() {
 
   return (
     <>
-      <StyledSnackbarProvider>
+      <StyledSnackbarProvider maxSnack={3} autoHideDuration={3000} >
         <Context>
           <Router></Router>
         </Context>

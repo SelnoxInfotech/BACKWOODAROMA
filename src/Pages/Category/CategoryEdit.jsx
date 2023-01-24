@@ -10,12 +10,31 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useSnackbar } from 'notistack';
 import Createcontext from "../../Hooks/Context/Context"
+import { styled } from '@mui/material/styles';
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiDialogContent-root': {
+        padding: theme.spacing(2),
+    },
+    '& .MuiDialogActions-root': {
+        padding: theme.spacing(1),
+    },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+            borderWidth: "1px",
+            borderColor: 'black',
+        },
+    },
+
+
+}));
+
 export default function CategEditbox(props) {
     const { dispatch } = useContext(Createcontext)
     const { enqueueSnackbar } = useSnackbar();
     const cookies = new Cookies();
     const token_data = cookies.get('Token_access')
     const [open, setOpen] = React.useState(false);
+    const [error, set] = React.useState('')
     const [data, setdata] = React.useState({
         id: props.data.id,
         Category: props.data.name,
@@ -53,10 +72,20 @@ export default function CategEditbox(props) {
             }
 
         }).then(response => {
-            enqueueSnackbar('Edit Category success !', { variant: 'success' });
-        })
-        setOpen(false);
-        dispatch({ type: 'api', api: true })
+            if (response) {
+                dispatch({ type: 'api', api: true })
+                enqueueSnackbar('Edit Category success !', { variant: 'success' });
+                setOpen(false);
+            }
+        }).catch(
+            function (error) {
+                const d = error.response.data
+                const name = d.error.name[0]
+                set("red")
+                enqueueSnackbar(name, { variant: 'error' });
+                return Promise.reject(error)
+            }
+        )
     }
 
 
@@ -65,11 +94,22 @@ export default function CategEditbox(props) {
             <Button color="success" onClick={handleClickOpen}>
                 Edit
             </Button>
-            <Dialog
-                open={open}
+            <BootstrapDialog
                 onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description">
+                aria-labelledby="customized-dialog-title"
+                open={open}
+                sx={{
+                    "& .MuiDialog-container": {
+                        "& .MuiPaper-root": {
+                            width: "60%",
+                            height: "60%",
+                            maxWidth: "none",  // Set your width here
+                        },
+                    },
+                }}
+
+            >
+
                 <DialogContent>
                     <div className='container-fluid '>
                         <div className='row '>
@@ -83,13 +123,23 @@ export default function CategEditbox(props) {
                                 </div>
                                 <div className='col-12 top label  con'>
                                     <div className='col'>
+
                                         <label className='label'>
+                                            <span className='required'>*</span>
                                             Name:
                                         </label>
                                     </div>
                                     <div className='col'>
                                         <TextField placeholder='Add Category' id="outlined-basic" variant="outlined" value={data.Category.toUpperCase()}
-                                            onChange={handlechanges} name="Category" style={{ minWidth: 190, fontSize: 15 }} />
+                                            onChange={handlechanges} name="Category" style={{ minWidth: 190, fontSize: 15 }}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error
+                                                    },
+                                                }
+                                            }}
+                                        />
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con'>
@@ -126,7 +176,8 @@ export default function CategEditbox(props) {
                     <Button color="success" onClick={handleClose}>Exit
                     </Button>
                 </DialogActions>
-            </Dialog>
+
+            </BootstrapDialog>
         </div>
     );
 }

@@ -19,6 +19,16 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
     },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+            borderWidth: "1px",
+            borderColor: 'black',
+        },
+    },
+    '& .MuiButtonBase-root':{
+        fontSize: "1.5625rem",
+        color:"#31B665"
+    }
 }));
 
 function BootstrapDialogTitle(props) {
@@ -28,9 +38,10 @@ export default function SubCategoryEdit(props) {
     const { enqueueSnackbar } = useSnackbar();
     const { dispatch } = useContext(Createcontext)
     const [open, setOpen] = React.useState(false);
+    const [error, seterror] = React.useState('')
     const [SubCategory, setSubCategory] = React.useState({
         id: props.data.id,
-        Category_id: props.data.category,
+        Category_id: props.data.category_id,
         name: props.data.name,
         categoryName: props.data.category_name,
         Status: props.data.Status
@@ -86,7 +97,15 @@ export default function SubCategoryEdit(props) {
             setOpen(false);
             dispatch({ type: 'api', api: true })
             enqueueSnackbar('Edit Sub-Category  success !', { variant: 'success' });
-        })
+        }).catch(
+            function (error) {
+                const d = error.response.data
+                const name = d.error.name[0]
+                seterror("red")
+                enqueueSnackbar(name, { variant: 'error' });
+                return Promise.reject(error)
+            }
+        )
     };
 
     return (
@@ -122,15 +141,24 @@ export default function SubCategoryEdit(props) {
                                     </h2>
                                     </div>
                                 </div>
-                                <div className='col-12 top label  con margn_top '>
+                                <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
+                                        <span className='required'>*</span>
                                             Name:
                                         </label>
                                     </div>
                                     <div className='col'>
-                                        <TextField placeholder='Add  Sub Category' id="outlined-basic" variant="outlined" name='name' value={SubCategory.name.toUpperCase()} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                        <TextField type="text" placeholder='Add  Sub Category' id="outlined-basic" variant="outlined" name='name' value={SubCategory.name.toUpperCase()} style={{ minWidth: 190, fontSize: 15 }}
+                                            onChange={handleChange}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error
+                                                    },
+                                                }
+                                            }}
+                                             />
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con'>

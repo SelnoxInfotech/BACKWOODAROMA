@@ -36,7 +36,6 @@ export default function Category(props) {
     });
 
     const [totel, setTotal] = React.useState([])
-
     
     
     useEffect(() => {
@@ -51,10 +50,10 @@ export default function Category(props) {
     }).then(response => {
 
         setTotal([...response.data])
-
+     
     })
 
-    },[state])
+    },[state ])
 
 
 

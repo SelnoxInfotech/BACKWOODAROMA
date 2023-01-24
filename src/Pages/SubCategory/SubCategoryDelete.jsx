@@ -1,4 +1,4 @@
-import  React ,{useContext} from 'react';
+import React, { useContext } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -16,8 +16,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function Delete(props) {
   const { enqueueSnackbar } = useSnackbar();
-  const { dispatch} = useContext(Createcontext)
-    const cookies = new Cookies();
+  const { dispatch } = useContext(Createcontext)
+  const cookies = new Cookies();
   const [open, setOpen] = React.useState(false);
   const token_data = cookies.get('Token_access')
   const handleClickOpen = () => {
@@ -30,22 +30,23 @@ export default function Delete(props) {
 
   const Delete = () => {
     const id = props.data.id
-       axios.delete(`http://34.201.114.126:8000/AdminPanel/delete-SubCategory/${id}`, {
-
-           headers: {
-               'Authorization': `Bearer ${token_data}`
-           }
-       }).then(response => {
+    axios.delete(`http://34.201.114.126:8000/AdminPanel/delete-SubCategory/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token_data}`
+      }
+    }).then(response => {
+      if (response) {
         setOpen(false);
-        dispatch({type:'api',api: true})
+        dispatch({ type: 'api', api: true })
         enqueueSnackbar('Sub-Category Delete success !', { variant: 'success' });
-       })
-   };
+      }
+    })
+  };
 
   return (
     <div>
       <Button color='success' onClick={handleClickOpen}>
-      Delete
+        Delete
       </Button>
       <Dialog
         open={open}
@@ -57,12 +58,12 @@ export default function Delete(props) {
         <DialogTitle>{"Delete Sub Category?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-          Are you sure you want to delete this item?
+            Are you sure you want to delete this item?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={Delete}>yes</Button>
-          <Button onClick={handleClose}>no?</Button>
+          <Button onClick={Delete} sx={{ color: 'red'}}>yes</Button>
+          <Button onClick={handleClose} sx={{ color: '#31B665'}} >no?</Button>
         </DialogActions>
       </Dialog>
     </div>
