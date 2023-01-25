@@ -30,9 +30,9 @@ export default function Router() {
   return (
     
 
-      <BrowserRouter >
+      <BrowserRouter basename ="/" >
         <Navbar></Navbar>
-        <Routes >
+        <Routes  >
          <Route  path="/Login" element={<Protected Component={Loginlogout } />}/>
          <Route  exact path="/" element={<Protected Component={Home } />} /> 
          <Route  path="/category" element={<Protected Component={Category } />} /> 

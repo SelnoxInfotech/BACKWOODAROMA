@@ -8,6 +8,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Cookies from 'universal-cookie';
 import { Link, useNavigate } from 'react-router-dom';
+import { TextField } from '@mui/material';
+import { AiFillEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+
 
 
 export default function Login_logout() {
@@ -18,7 +21,10 @@ export default function Login_logout() {
     const [show, setOpen] = useState(false);
     const [isLoggedIn, loading] = useState(false)
     const [OTP, setotp] = useState("");
-
+    const [values, setValues] = React.useState({
+        password: "",
+        showPassword: false,
+    });
     const data = {
         email: inputs.Email,
         username: inputs.username,
@@ -67,13 +73,11 @@ export default function Login_logout() {
     }
 
 
-
     function alertFunc() {
         setOpen(false);
     }
 
-
-
+    
     const otp_send = () => {
 
         setOpen(false);
@@ -97,69 +101,125 @@ export default function Login_logout() {
 
     const handleClose = () => {
         setOpen(false);
-    }
-    function password_show_hide() {
-        var x = document.getElementById("password");
-        var show_eye = document.getElementById("show_eye");
-        var hide_eye = document.getElementById("hide_eye");
-        hide_eye.classList.remove("d-none");
-        if (x.type === "password") {
-            x.type = "text";
-            show_eye.style.display = "none";
-            hide_eye.style.display = "block";
-        } else {
-            x.type = "password";
-            show_eye.style.display = "block";
-            hide_eye.style.display = "none";
-        }
+    
+     
     }
 
 
-
+    const handleClickShowPassword = () => {
+        setValues({ ...values, showPassword: !values.showPassword });
+    };
 
     return (
         <>
 
-            <div className='container  login_border center'>
-                <div className='row gy-3'>
-                    <div className='col-12'>
+            <div className='container  center '>
+                <div className='row '>
+                    <div className='col-12 center login_border'>
                         <p className="Login_font">ADMIN PANEL</p>
                         <p className='color Login_font'> Login to access your account</p>
                     </div>
-                    <div className='col  '>
-                        <form onSubmit={handleSubmit}>
-                            <div className='form mx-sm-3 mb-2'>
-                                <label> Name:
+                    <div className='col-12 '>
 
-                                    <input required placeholder=' User Name ' type="text" name="username" value={inputs.username || ""} onChange={handleChange} />
-                                </label>
-                                <label>Email:
-                                    <input required placeholder=' Email Address' type="email" name="Email" value={inputs.Email || ""} onChange={handleChange} />
-                                </label>
-                                <label> Password:
-                                    <input required placeholder='Password' type="password" id="password" name="password" value={inputs.password || ""} onChange={handleChange} >
-                                    </input>
-                                    <span className='eye' onClick={password_show_hide}>
-                                        <i className="fas fa-eye" id="show_eye"></i>
-                                        <i className="fas fa-eye-slash d-none" id="hide_eye"></i>
-                                    </span>
-                                </label>
-                                <label> Remember me :
-                                    <input type="checkbox" name='checkbox' value={inputs.checkbox || ""} onChange={handleChange}  ></input>
+                        <div className='col-12  label top  con'>
+                            <div className='col-sm-5'>
 
+                                <label className='label'>
+                                    <span className='required'>*</span>
+                                    Name:
                                 </label>
-                                <div>
-                                    {isLoggedIn ? <>
-                                        <button className='color' id='Submit_but' type="submit" > Submit</button>
-                                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                        <span className="visually-hidden">Loading...</span>
-                                    </> : <button className='btn btn-success' id='Submit_but' type="submit" > Submit</button>}
-
-
-                                </div>
                             </div>
-                        </form>
-                        <div className='col-12  check'>
+                            <div className='col display'>
+                                <TextField placeholder='User Name' id="outlined-basic" variant="outlined"
+                                    name="username" style={{ minWidth: 190 }} inputProps={{ style: { fontSize: 15, height: 5 } }}
+                                    onChange={handleChange}
+                                    value={inputs.username || ""}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            '&.Mui-focused fieldset': {
+                                                borderWidth: "1px",
+                                                borderColor: 'black',
+                                            },
+                                        },
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        <div className='col-12  label top  con'>
+                            <div className='col-sm-5'>
+
+                                <label className='label'>
+                                    <span className='required'>*</span>
+                                    Email:
+                                </label>
+                            </div>
+                            <div className='col display'>
+                                <TextField placeholder='Email Address ' id="outlined-basic" variant="outlined" name="Email"
+                                    type="email" style={{ minWidth: 190, fontSize: 15 }} inputProps={{ style: { fontSize: 15, height: 5 } }}
+                                    value={inputs.Email || ""}
+                                    onChange={handleChange}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            '&.Mui-focused fieldset': {
+                                                borderWidth: "1px",
+                                                borderColor: 'black',
+                                            },
+                                        },
+
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <div className='col-12  label top  con'>
+                            <div className='col-sm-5'>
+
+                                <label className='label'>
+                                    <span className='required'>*</span>
+                                    Password:
+                                </label>
+                            </div>
+                            <div className='col  display '>
+                                <TextField placeholder='Password' type={values.showPassword ? "text" : "password"} id="outlined-basic" variant="outlined"
+                                    name="password" style={{ minWidth: 190 }} inputProps={{ style: { fontSize: 15, height: 5 } }}
+                                    onChange={handleChange}
+
+                                    value={inputs.password || ""}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            '&.Mui-focused fieldset': {
+                                                borderWidth: "1px",
+                                                borderColor: 'black',
+                                            },
+                                        },
+                                        '& .MuiButtonBase-root': {
+                                            fontSize: "1.5625rem",
+                                            color: "#31B665"
+                                        }
+                                    }}
+                                />
+                                <span >
+                                    {
+                                        values.showPassword === false ? <AiFillEye className='eye' onClick={handleClickShowPassword} ></AiFillEye> : <AiOutlineEyeInvisible className='eye' onClick={handleClickShowPassword}  ></AiOutlineEyeInvisible>
+                                    }
+                                </span>
+                            </div>
+                        </div>
+                        <label className='top'> Remember me :
+                            <input type="checkbox" name='checkbox' value={inputs.checkbox || ""} onChange={handleChange} />
+
+                        </label>
+                        <div className='top'>
+                            {isLoggedIn ? <>
+                                <button className='color' id='Submit_but' type="submit" onClick={handleSubmit} > Submit</button>
+                                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span className="visually-hidden">Loading...</span>
+                            </> : <button className='btn btn-success' id='Submit_but' type="submit" onClick={handleSubmit}  > Submit</button>}
+
+
+                        </div>
+
+                        <div className='col-12   check'>
 
                             <Link to={"/Forgot"}> <button className='color btn'>Forgot Password?</button></Link>
                         </div>
@@ -168,7 +228,7 @@ export default function Login_logout() {
                 </div>
                 <div>
 
-                    <Dialog open={show} onClose={handleClose}>
+                    <Dialog open={show} onClose={handleClose}  disableEscapeKeyDown>
                         <DialogTitle>Enter Otp</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
@@ -191,13 +251,13 @@ export default function Login_logout() {
                         <DialogActions>
                             {
                                 otpvalid === "invalid Otp" ? <p>
-                                    <button className='btn otpbtn ' onClick={handleSubmit}>resend</button> 
-                                    <button className='btn otpbtn ' onClick={otp_send}>Verify</button>
+                                    <button className='btn Sub_button size ' onClick={handleSubmit}>resend</button>
+                                    <button className='btn Sub_button  size' onClick={otp_send}>Verify</button>
                                 </p>
-                                 :<button className='btn otpbtn ' onClick={otp_send}>Verify</button>
+                                    : <button className='btn Sub_button  size' onClick={otp_send}>Verify</button>
                             }
-                            
-                            
+
+
                         </DialogActions>
                     </Dialog>
                 </div>

@@ -48,6 +48,8 @@ label {
   font-size: 30px;
 }
 .login_border {
+     
+  border-radius: 40px;
   margin-top: 110px;
 }
 .louout{
@@ -78,11 +80,10 @@ label {
 	background-color: #31B665;
 }
 .eye{
-
-  display: block;
   position: relative;
-  left: 129px;
-  bottom: 22px;
+  top: 13px;
+  font-size: larger;
+  cursor: pointer;
 }
 #Submit_but{
   border: 0px;
@@ -98,14 +99,21 @@ label {
 .password{
   margin-inline: 11px;
 }
-.login_border{
+/* .login_border{
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, -0.3);
-}
-.form{
+} */
+/* .form{
   display: inline-grid;
     gap: 20px;
-}
+} */
 
+.login_border{
+  /* right: 4%; */
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, -0.3); */
+}
+.display{
+  display: flex;
+}
 .btn-success{
   font-size: 15px;
 --bs-btn-bg: #31B665;
@@ -470,9 +478,10 @@ gap: 10px;
 @media (max-width: 500px) {
   .label {
     display: contents;
-    
-  
   }
+  .display {
+    display: flow-root;
+}
 }
 .editer{
   background-color: #ecebeb ;
@@ -484,11 +493,15 @@ gap: 10px;
   background-color: #31B665;
 }
 .btn:hover {
-  color:black;;
+  color:#31B665;;
   border-color: #31B665;
 }
 
-
+.size {
+  height: 30px;
+  width: 70px;
+  font-size: 15px;
+}
 .super-app-theme--header{
   font-style:calc(20px);
   font-size: 19px;

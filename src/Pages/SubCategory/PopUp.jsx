@@ -22,15 +22,14 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
     '& .MuiOutlinedInput-root': {
         '&.Mui-focused fieldset': {
-          borderWidth: "1px",
-          borderColor: 'black',
+            borderWidth: "1px",
+            borderColor: 'black',
         },
-  },
-  '& .MuiButtonBase-root':{
-    fontSize: "1.5625rem",
-    color:"#31B665"
-}
-
+    },
+    '& .MuiButtonBase-root': {
+        fontSize: "1.5625rem",
+        color: "#31B665"
+    }
 }));
 
 
@@ -42,7 +41,7 @@ export default function PopUp() {
     const [Category, setCategory] = React.useState([]);
     const [Status, setStatus] = React.useState('Active');
     const [NameCategory, setNameCategory] = React.useState([]);
-    const [error , seterror] = React.useState('') 
+    const [error, seterror] = React.useState('')
     const handleStatus = (event) => {
         setStatus(event.target.value);
     };
@@ -77,7 +76,7 @@ export default function PopUp() {
 
             setSubCategory(response.data)
             setCategory(response.data[0].id)
-           
+
         })
     }, [])
 
@@ -107,9 +106,9 @@ export default function PopUp() {
         }).catch(
             function (error) {
                 const d = error.response.data.error
-                 const name = d.name[0]
+                const name = d.name[0]
                 seterror("red")
-                enqueueSnackbar( name, { variant: 'error' });
+                enqueueSnackbar(name, { variant: 'error' });
                 return Promise.reject(error)
             }
         )
@@ -134,7 +133,7 @@ export default function PopUp() {
                     },
                 }}
             >
-            
+
                 <DialogContent dividers>
                     <div className='container-fluid '>
                         <div className='row '>
@@ -143,26 +142,27 @@ export default function PopUp() {
 
                                 <div className='col-12 Add_Category center'>
                                     <div className="col "> <h2> Add Sub Category</h2></div>
-                                
+
                                 </div>
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
 
                                         <label className='label'>
-                                        <span className='required'>*</span>
+                                            <span className='required'>*</span>
                                             Name:
                                         </label>
                                     </div>
                                     <div className='col'>
-                                        <TextField inputProps={{style: {fontSize: 15}}} placeholder='Add  Sub Category' id="outlined-basic" variant="outlined" value={NameCategory} style={{ minWidth: 190, fontSize: 15 }}
+                                        <TextField inputProps={{ style: { fontSize: 15 } }} placeholder='Add  Sub Category' id="outlined-basic" variant="outlined" value={NameCategory} style={{ minWidth: 190, fontSize: 15 }}
                                             onChange={handleName}
-                                            sx={{ 
+                                            sx={{
                                                 '& .MuiOutlinedInput-root': {
                                                     '& fieldset': {
-                                                      borderColor:error
-                                                    },}
+                                                        borderColor: error
+                                                    },
+                                                }
                                             }}
-                                             />
+                                        />
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con'>
@@ -175,7 +175,7 @@ export default function PopUp() {
                                         <Select
                                             value={Category}
                                             onChange={handleChange}
-                                            
+
                                             inputProps={{ 'aria-label': 'Without label' }} style={{ minWidth: 190, fontSize: 15 }}>
 
                                             {
@@ -193,7 +193,7 @@ export default function PopUp() {
                                 <div className='col-12 top label  con'>
                                     <div className='col'>
                                         <label className='label'>
-                                      
+
                                             Status:
                                         </label>
                                     </div>
