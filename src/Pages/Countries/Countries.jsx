@@ -9,14 +9,15 @@ import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { GridActionsCellItem } from '@mui/x-data-grid-pro';
+import { useSnackbar } from 'notistack';
 import { AiFillEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import CountryEdit from "./CountryEdit"
 import Createcontext from "../../Hooks/Context/Context"
 import DeleteCountry from "../Countries/DeleteCountry"
 
 export default function Countries() {
-    const { state} = useContext(Createcontext)
+    const { state ,dispatch} = useContext(Createcontext)
+    const { enqueueSnackbar } = useSnackbar();
     const CustomFontTheme = createTheme({
         typography: {
             fontSize: 25,
@@ -49,30 +50,58 @@ export default function Countries() {
         })
     }, [token_data ,state])
 
+    const Submit = (params) => {
+        const config = {
+            headers: { Authorization: `Bearer ${token_data}` }
+        };
+        const data = {
+            "id" : params.row.id,
+            "CountryName": params.row.Countryname.toUpperCase(),
+            "Status": params.row.Status === "Active" ? "Hide" : "Active"
+        }
+        axios.post(
+            `http://34.201.114.126:8000/AdminPanel/update-Country/${params.row.id}`,
+            data,
+            config
+        ).then(() => {
+         
+            dispatch({ type: 'api', api: true })
+            enqueueSnackbar('Edit Countries success !', { variant: 'success' });
+        }).catch(
+            function (error) {
+                return Promise.reject(error)
+            }
+        )
+    };
 
     const columns = [
         { field: 'CountryName', headerName: 'Country Name', width: 200, editable: true, headerClassName: 'super-app-theme--header' },
-        { field: 'Status', headerName: 'Status', type: 'text', editable: true, width: 300, headerClassName: 'super-app-theme--header',
+        { field: 'Status', headerName: 'Status', type: 'action', editable: false, width: 300, headerClassName: 'super-app-theme--header',
         renderCell: (params) => {
+
             if (params.formattedValue === "Active") {
                 return (
-                    <GridActionsCellItem
-                        index={params}
-                        icon={<h2><AiFillEye /> </h2>}
-                        label="Active"
-                        style={{ color: "#31B665 ", fontSize: 25 }}
-                        fontSize="100"
-                    >
-                    </GridActionsCellItem>
+                    <p
+                        style={{ color: "#31B665 ", fontSize: 25, cursor: "pointer" }}
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                            Submit(params);
+                        }}
+                    ><AiFillEye /> </p>
+
                 )
             }
             return (
-                <GridActionsCellItem
-                    index={params}
-                    icon={<h2><AiOutlineEyeInvisible /></h2>}
-                    label="hide"
-                    style={{ color: "#FF0000" }}
-                />
+                <p
+                    style={{ color: "red ", fontSize: 25, cursor: "pointer" }}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                        Submit(params);
+                    }}
+                ><AiOutlineEyeInvisible /></p>
+
             )
         }
      },
@@ -111,24 +140,29 @@ export default function Countries() {
                     </div>
 
                     <div className='col-12' >
-                    <Box sx={{
-                            height: 400,
-                            width: '100%',
-                            '& .MuiDataGrid-columnHeaders': {
-                                backgroundColor: '#E1FFED',
-                            },
-                            '& .css-e07ewl-MuiButtonBase-root-MuiButton-root': {
-                                color: '#000000',
-                                display: "flex",
-                            },
-                        }}>
+                  
                             
                         <ThemeProvider theme={CustomFontTheme}>
                             <div style={{ height: 400, width: '100%', }}>
-                                <DataGrid rows={rows} columns={columns}  components={{ Toolbar: GridToolbar }}  checkboxSelection/>
+                                <DataGrid rows={rows} columns={columns}  components={{ Toolbar: GridToolbar }}  checkboxSelection
+                                  sx={{
+                                    "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+                                       outline: "1px solid black ",
+                                    },
+                                    height: 400,
+                                    width: '100%',
+                                    '& .MuiDataGrid-columnHeaders': {
+                                        backgroundColor: '#E1FFED',
+                                    },
+                                    '& .css-e07ewl-MuiButtonBase-root-MuiButton-root': {
+                                        color: '#000000',
+                                        display: "flex",
+                                    },
+                                 }}
+                                />
                             </div>
                         </ThemeProvider>
-                        </Box>
+                 
                     </div>
                 </div>
 

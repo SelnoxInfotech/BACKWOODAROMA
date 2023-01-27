@@ -1,4 +1,4 @@
-import  React ,{useContext} from 'react';
+import React, { useContext } from 'react';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Axios from "axios"
@@ -10,8 +10,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Cookies from 'universal-cookie';
 import Createcontext from "../../Hooks/Context/Context"
-import { useSnackbar } from 'notistack';
-
+import InputAdornment from '@mui/material/InputAdornment';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -21,36 +20,37 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
     '& .MuiOutlinedInput-root': {
         '&.Mui-focused fieldset': {
-          borderWidth: "1px",
-          borderColor: 'black',
+            borderWidth: "1px",
+            borderColor: 'black',
         },
-  },
-  '& .MuiButtonBase-root':{
-    fontSize: "1.5625rem",
-    color:"#31B665"
-}
-      
-   
+    },
+    '& .MuiButtonBase-root': {
+        fontSize: "1.5625rem",
+        color: "#31B665"
+    },
+
 }));
 
 
-export default function Categorypopup(props) {
- 
-    const { enqueueSnackbar } = useSnackbar();
-    const { dispatch} = useContext(Createcontext)
+
+export default function Categorypopup() {
+
+    const { dispatch } = useContext(Createcontext)
     const cookies = new Cookies();
     const token_data = cookies.get('Token_access')
     const [open, setOpen] = React.useState(false);
     const [Category, setCategory] = React.useState('Active');
-   
+
     const [NameCategory, setNameCategory] = React.useState('');
-    const [error , seterror] = React.useState('') 
-    
+    const [error, seterror] = React.useState()
+    const [massage, setmassage] = React.useState()
+
     const handleChange = (event) => {
         setCategory(event.target.value);
     };
     const handleName = (event) => {
         setNameCategory(event.target.value.toUpperCase());
+        setmassage("")
     };
 
 
@@ -60,8 +60,9 @@ export default function Categorypopup(props) {
     const handleClose = () => {
         setOpen(false);
         seterror("")
+        setmassage("")
+        
     };
-    
 
 
 
@@ -83,15 +84,15 @@ export default function Categorypopup(props) {
             setOpen(false);
             setNameCategory("");
             setCategory("Active");
-            dispatch({type:'api',api: true})
+            dispatch({ type: 'api', api: true })
             seterror("")
         }).catch(
             function (error) {
-                const d = error.response.data
-                 const name = d.name[0]
+                setmassage(error.response.data.name)
+                console.log(massage)
                 seterror("red")
-                enqueueSnackbar( name, { variant: 'error' });
-              
+
+
 
                 return Promise.reject(error)
             }
@@ -126,26 +127,38 @@ export default function Categorypopup(props) {
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con'>
-                                    <div className='col'>
+                                    <div className='col '>
                                         <label className='label'>
                                             <span className='required'>*</span>
                                             Name:
                                         </label>
                                     </div>
                                     <div className='col'>
-                                
-                                    <TextField   inputProps={{style: {fontSize: 15}}} placeholder='Add Category' id="outlined-basic"  variant="outlined" value={NameCategory || ""}
-                                            onChange={handleName} 
-                                         
-                                         sx={{ 
-                                            '& .MuiOutlinedInput-root': {
-                                                '& fieldset': {
-                                                  borderColor:error
-                                                },}
-                                        }}
-                                            />
-                           
-                                        
+
+                                        <TextField
+                                            style={{ minWidth: "11vw" }} InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            placeholder='Add Category' id="outlined-basic" variant="outlined" value={NameCategory || ""}
+                                            onChange={handleName}
+                                            label={massage}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+                                        />
+
+
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con'>
@@ -156,7 +169,7 @@ export default function Categorypopup(props) {
                                     </div>
                                     <div className='col ' >
                                         <Select value={Category} onChange={handleChange} displayEmpty inputProps={{ 'aria-label': 'Without label', }} style={{ minWidth: "11vw", fontSize: 15 }} >
-                                           
+
                                             <MenuItem value={"Active"} style={{ fontSize: 15 }}>Active</MenuItem>
                                             <MenuItem value={"Hide"} style={{ fontSize: 15 }}>  Hide</MenuItem>
 

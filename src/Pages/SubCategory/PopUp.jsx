@@ -11,7 +11,7 @@ import Cookies from 'universal-cookie';
 import axios from "axios"
 import Axios from "axios"
 import Createcontext from "../../Hooks/Context/Context"
-import { useSnackbar } from 'notistack';
+import InputAdornment from '@mui/material/InputAdornment';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -34,7 +34,6 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 
 export default function PopUp() {
-    const { enqueueSnackbar } = useSnackbar();
     const { dispatch } = useContext(Createcontext)
     const [open, setOpen] = React.useState(false);
     const [SubCategory, setSubCategory] = React.useState([]);
@@ -42,15 +41,19 @@ export default function PopUp() {
     const [Status, setStatus] = React.useState('Active');
     const [NameCategory, setNameCategory] = React.useState([]);
     const [error, seterror] = React.useState('')
+    const [massage, setmassage] = React.useState()
     const handleStatus = (event) => {
         setStatus(event.target.value);
     };
     const handleChange = (event) => {
         setCategory(event.target.value);
+    
 
     };
     const handleName = (event) => {
         setNameCategory(event.target.value.toUpperCase());
+        setmassage( "")
+        seterror("")
 
     };
 
@@ -59,6 +62,7 @@ export default function PopUp() {
     };
     const handleClose = () => {
         setOpen(false);
+        setmassage( "")
         seterror("")
     };
 
@@ -85,7 +89,7 @@ export default function PopUp() {
     const Submit = () => {
         const cookies = new Cookies();
         const token_data = cookies.get('Token_access')
-
+     
         const config = {
             headers: { Authorization: `Bearer ${token_data}` }
         };
@@ -105,10 +109,8 @@ export default function PopUp() {
             setNameCategory('')
         }).catch(
             function (error) {
-                const d = error.response.data.error
-                const name = d.name[0]
+                setmassage( error.response.data.name)
                 seterror("red")
-                enqueueSnackbar(name, { variant: 'error' });
                 return Promise.reject(error)
             }
         )
@@ -153,13 +155,23 @@ export default function PopUp() {
                                         </label>
                                     </div>
                                     <div className='col'>
-                                        <TextField inputProps={{ style: { fontSize: 15 } }} placeholder='Add  Sub Category' id="outlined-basic" variant="outlined" value={NameCategory} style={{ minWidth: 190, fontSize: 15 }}
+                                        <TextField  InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 15 } }} placeholder='Add  Sub Category' id="outlined-basic" variant="outlined" value={NameCategory} style={{ minWidth: 190, fontSize: 15 }}
                                             onChange={handleName}
+                                            label={massage}
                                             sx={{
                                                 '& .MuiOutlinedInput-root': {
                                                     '& fieldset': {
-                                                        borderColor: error
+                                                        borderColor: error,
+                                                        height: 55,
                                                     },
+                                                },
+                                                "& label": {
+                                                    fontSize: 14,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
                                                 }
                                             }}
                                         />

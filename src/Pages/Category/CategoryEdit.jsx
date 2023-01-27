@@ -11,6 +11,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { useSnackbar } from 'notistack';
 import Createcontext from "../../Hooks/Context/Context"
 import { styled } from '@mui/material/styles';
+import InputAdornment from '@mui/material/InputAdornment';
+
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -35,6 +37,7 @@ export default function CategEditbox(props) {
     const token_data = cookies.get('Token_access')
     const [open, setOpen] = React.useState(false);
     const [error, set] = React.useState('')
+    const [massage, setmassage] = React.useState()
     const [data, setdata] = React.useState({
         id: props.data.id,
         Category: props.data.name,
@@ -48,6 +51,9 @@ export default function CategEditbox(props) {
 
     const handleClose = () => {
         setOpen(false);
+        setmassage("")
+        set('')
+    
     };
     const handlechanges = (event) => {
         const value = event.target.value;
@@ -79,10 +85,9 @@ export default function CategEditbox(props) {
             }
         }).catch(
             function (error) {
-                const d = error.response.data
-                const name = d.error.name[0]
+                setmassage(error.response.data.name)
+              
                 set("red")
-                enqueueSnackbar(name, { variant: 'error' });
                 return Promise.reject(error)
             }
         )
@@ -131,12 +136,24 @@ export default function CategEditbox(props) {
                                     </div>
                                     <div className='col'>
                                         <TextField placeholder='Add Category' id="outlined-basic" variant="outlined" value={data.Category.toUpperCase()}
-                                            onChange={handlechanges} name="Category" style={{ minWidth: 190, fontSize: 15 }}
+                                        style={{ minWidth: "11vw"}}
+                                            label={massage}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            onChange={handlechanges} name="Category" 
                                             sx={{
                                                 '& .MuiOutlinedInput-root': {
                                                     '& fieldset': {
-                                                        borderColor: error
+                                                        borderColor: error,
+                                                        height: 55,
                                                     },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
                                                 }
                                             }}
                                         />

@@ -12,6 +12,7 @@ import axios from "axios"
 import Axios from "axios"
 import Createcontext from "../../Hooks/Context/Context"
 import { useSnackbar } from 'notistack';
+import InputAdornment from '@mui/material/InputAdornment';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -26,7 +27,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         },
     },
     '& .MuiButtonBase-root':{
-        fontSize: "1.5625rem",
+        fontSize: "1.5rem",
         color:"#31B665"
     }
 }));
@@ -39,6 +40,7 @@ export default function SubCategoryEdit(props) {
     const { dispatch } = useContext(Createcontext)
     const [open, setOpen] = React.useState(false);
     const [error, seterror] = React.useState('')
+    const [massage, setmassage] = React.useState()
     const [SubCategory, setSubCategory] = React.useState({
         id: props.data.id,
         Category_id: props.data.category_id,
@@ -60,6 +62,10 @@ export default function SubCategoryEdit(props) {
     };
     const handleClose = () => {
         setOpen(false);
+        setmassage ( "")
+                
+        seterror("")
+      
     };
     const cookies = new Cookies();
     const token_data = cookies.get('Token_access')
@@ -97,12 +103,14 @@ export default function SubCategoryEdit(props) {
             setOpen(false);
             dispatch({ type: 'api', api: true })
             enqueueSnackbar('Edit Sub-Category  success !', { variant: 'success' });
+            setmassage ( "")
+        seterror("")
         }).catch(
             function (error) {
-                const d = error.response.data
-                const name = d.error.name[0]
+                setmassage ( error.response.data.name)
+                
                 seterror("red")
-                enqueueSnackbar(name, { variant: 'error' });
+              
                 return Promise.reject(error)
             }
         )
@@ -149,13 +157,25 @@ export default function SubCategoryEdit(props) {
                                         </label>
                                     </div>
                                     <div className='col'>
-                                        <TextField type="text" placeholder='Add  Sub Category' id="outlined-basic" variant="outlined" name='name' value={SubCategory.name.toUpperCase()} style={{ minWidth: 190, fontSize: 15 }}
+                                        <TextField type="text" placeholder='Add  Sub Category' id="outlined-basic" variant="outlined" name='name' value={SubCategory.name.toUpperCase()} 
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            style={{ minWidth: "11vw" }} 
                                             onChange={handleChange}
+                                            label={massage}
                                             sx={{
                                                 '& .MuiOutlinedInput-root': {
                                                     '& fieldset': {
-                                                        borderColor: error
+                                                        borderColor: error,
+                                                        height: 55,
                                                     },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
                                                 }
                                             }}
                                              />
