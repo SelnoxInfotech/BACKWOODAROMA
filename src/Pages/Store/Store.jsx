@@ -27,6 +27,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 
 
 export default function Store() {
+
     const cookies = new Cookies();
     const token_data = cookies.get('Token_access')
     const [totel, setTotal] = React.useState([])
@@ -42,7 +43,7 @@ export default function Store() {
             console.log(response.data)
 
         })
-    }, [token_data])
+    }, [token_data ])
     const columns = [
         {
             field: 'Store_Image', headerName: 'Store Image', editable: true, headerClassName: 'super-app-theme--header', width: 110,
@@ -58,6 +59,7 @@ export default function Store() {
         { field: 'Stores_Website', headerName: 'Stores Website', type: 'text', editable: true, width: 130, headerClassName: 'super-app-theme--header' },
         { field: 'Stores_MobileNo', headerName: 'Stores MobileNo', type: 'text', editable: true, width: 150, headerClassName: 'super-app-theme--header' },
         { field: 'Status', headerName: 'Status', type: 'text', editable: true, width: 80, headerClassName: 'super-app-theme--header',
+        
         renderCell: (params) => {
 
             if (params.formattedValue === "Active") {

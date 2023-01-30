@@ -1,4 +1,4 @@
-import * as React from 'react';
+import  React ,{useContext} from 'react';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -10,6 +10,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Cookies from 'universal-cookie';
 import Axios from "axios"
 import axios  from "axios"
+import Createcontext from "../../Hooks/Context/Context"
+import InputAdornment from '@mui/material/InputAdornment';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -17,18 +19,32 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
     },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+            borderWidth: "1px",
+            borderColor: 'black',
+        },
+    },
+    '& .MuiButtonBase-root': {
+        fontSize: "1.5625rem",
+        color: "#31B665"
+    },
+
 }));
 
 function BootstrapDialogTitle(props) {
 
 }
 export default function StatePopUp() {
+    const { dispatch } = useContext(Createcontext)
     const [open, setOpen] = React.useState(false);
     const [country_id, setCountry_id] = React.useState([]);
-    const [Status, setStatus] = React.useState('');
+    const [Status, setStatus] = React.useState('Active');
     const [NameState, setNameState] = React.useState([]);
     const [ country ,  setCountry] = React.useState([])
     const cookies = new Cookies();
+    const [error, seterror] = React.useState([])
+    const [errorMassager, seterrorMassager] = React.useState()
     const token_data = cookies.get('Token_access')
     const handleStatus = (event) => {
         setStatus(event.target.value);
@@ -39,7 +55,9 @@ export default function StatePopUp() {
     };
     const handleName = (event) => {
         setNameState(event.target.value.toUpperCase());
-       
+        seterrorMassager('')
+        seterror('')
+        
     };
    
     const handleClickOpen = () => {
@@ -47,6 +65,9 @@ export default function StatePopUp() {
     };
     const handleClose = () => {
         setOpen(false);
+        seterrorMassager('')
+        seterror('')
+        
     };
 
 
@@ -60,7 +81,8 @@ export default function StatePopUp() {
         }).then(response => {
            
             setCountry(response.data)
-                
+            setCountry_id(response.data[0].id)
+          
         })
     }, [token_data])
 
@@ -87,7 +109,25 @@ export default function StatePopUp() {
           config
         ).then(()=>{
             setOpen(false);
-        })
+            setNameState("")
+            dispatch({ type: 'api', api: true })
+        }).catch(
+            function (error) {
+           
+                if(error.response.data.StateName){
+                    
+                    seterrorMassager(error.response.data.StateName)
+                    
+                }
+                else {
+                    seterrorMassager(error.response.data.data.StateName[0])
+                    
+                    
+                }
+                seterror("red")
+                return Promise.reject(error)
+            }
+        )
     };
 
     return (
@@ -130,8 +170,28 @@ export default function StatePopUp() {
                                     </label>
                                     </div>
                                   <div className='col'>
-                                  <TextField placeholder='Add  States Name' id="outlined-basic" variant="outlined"   value={NameState } style={{minWidth: 190 , fontSize:15}}
-                                        onChange={handleName} />
+                                  <TextField
+                                  InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                   placeholder='Add  States Name' id="outlined-basic" variant="outlined"   value={NameState } style={{minWidth: 190 , fontSize:15}}
+                                        onChange={handleName}
+                                        label={errorMassager}
+                                        sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: error,
+                                                    height: 55,
+                                                },
+                                            },
+                                            "& label": {
+                                                fontSize: 13,
+                                                color: "red",
+                                                "&.Mui-focused": {
+                                                    marginLeft: 0,
+                                                    color: "red",
+                                                }
+                                            }
+                                        }}
+                                         />
                                   </div>
                                 </div>
                                 <div className='col-12 top label  con'>
@@ -147,9 +207,7 @@ export default function StatePopUp() {
                                         onChange={handleChange}
                                         displayEmpty
                                         inputProps={{ 'aria-label': 'Without label' }} style={{minWidth: 190 , fontSize:15}}>
-                                            <MenuItem value="" disabled style={{ fontSize:15}}>
-                                            <em>Select option</em>
-                                        </MenuItem>
+                                           
                                        
                                         {
                                             country.map((country) => {
@@ -176,9 +234,6 @@ export default function StatePopUp() {
                                         displayEmpty
                                         inputProps={{ 'aria-label': 'Without label' }} style={{minWidth: 190 , fontSize:15}}
                                     >
-                                        <MenuItem value="" disabled style={{ fontSize:15}}>
-                                            <em>Select option</em>
-                                        </MenuItem>
                                         <MenuItem value={"Active"} style={{ fontSize:15}}>Active</MenuItem>
                                         <MenuItem value={"Hide"} style={{ fontSize:15}}>Hide</MenuItem>
 

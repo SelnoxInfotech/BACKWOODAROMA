@@ -11,6 +11,7 @@ import Cookies from 'universal-cookie';
 import Axios from "axios"
 import { useSnackbar } from 'notistack';
 import Createcontext from "../../Hooks/Context/Context"
+import InputAdornment from '@mui/material/InputAdornment';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -18,6 +19,13 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
     },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+            borderWidth: "1px",
+            borderColor: 'black',
+        },
+    },
+
 }));
 
 function BootstrapDialogTitle(props) {
@@ -30,11 +38,15 @@ export default function CityEdit(props) {
     const { dispatch } = useContext(Createcontext)
     const [open, setOpen] = React.useState(false);
     const [States,SetState] = useState([])
+    const [error, seterror] = React.useState([])
+    const [errorMassager, seterrorMassager] = React.useState()
     const [city, SetCity] = React.useState({
+
         id: props.data.id,
         City_Name: props.data.CityName,
         States_Name: props.data.StatesName,
-        Status: props.data.Status
+        Status: props.data.Status,
+        States_id: props.data.States_id
     });
 
     const handleChange = (event) => {
@@ -48,6 +60,8 @@ export default function CityEdit(props) {
     };
     const handleClose = () => {
         setOpen(false);
+        seterrorMassager("")
+        seterror("")
     };
 
 
@@ -77,6 +91,22 @@ useEffect(()=>{
             dispatch({ type: 'api', api: true })
             enqueueSnackbar('Edit City success !', { variant: 'success' });
         })
+        .catch(
+            function (error) {
+                if(error.response.data.CityName){
+                    
+                    seterrorMassager(error.response.data.CityName)
+                    
+                }
+                else {
+                    seterrorMassager(error.response.data.data.CityName[0])
+                    
+                    
+                }
+                seterror("red")
+                return Promise.reject(error)
+            }
+        )
     };
     return (
         <div>
@@ -112,7 +142,7 @@ useEffect(()=>{
                                     </h2>
                                     </div>
                                 </div>
-                                <div className='col-12 top label  con margn_top '>
+                                <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
                                             City Name:
@@ -120,7 +150,29 @@ useEffect(()=>{
                                     </div>
                                     <div className='col'>
                                         <TextField key="text" id="outlined-basic" variant="outlined" name='City_Name' value={city.City_Name.toUpperCase()} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                            onChange={handleChange}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14  }  }}
+                                            label={errorMassager}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                },
+                                                root: {
+                                                    textTransform: "uppercase"
+                                                }
+                                            }}
+                                            />
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con  '>
@@ -132,7 +184,7 @@ useEffect(()=>{
                                     <div className='col'>
                                         <Select
                                             name='States_Name'
-                                            value={city.States_Name}
+                                            value={city.States_id}
                                             onChange={handleChange}
                                            
                                             inputProps={{ 'aria-label': 'Without label' }} style={{ minWidth: 190, fontSize: 15 }}
@@ -183,7 +235,7 @@ useEffect(()=>{
 
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={handleClose}>
+                <Button autoFocus color="success" onClick={handleClose}>
                         Exit
                     </Button>
                 </DialogActions>

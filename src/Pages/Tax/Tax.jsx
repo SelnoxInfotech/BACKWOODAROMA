@@ -7,16 +7,18 @@ import { createTheme } from "@mui/material/styles";
 import axios from "axios";
 import Taxpop from "./Taxpopup";
 import Box from '@mui/material/Box';
-import { GridActionsCellItem } from '@mui/x-data-grid-pro';
 import { AiFillEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TaxEdit from "./TaxEdit"
 import TexDelete from './TaxDelete';
+import { useSnackbar } from 'notistack';
+
 
 export default function Tax() {
-    const { state} = useContext(Createcontext)
+    const { enqueueSnackbar } = useSnackbar();
+    const { state ,dispatch} = useContext(Createcontext)
     const CustomFontTheme = createTheme({
         typography: {
             fontSize: 25,
@@ -52,6 +54,29 @@ export default function Tax() {
     }, [token_data,state])
 
 
+    const Submit = (params) => {
+        
+        const config = {
+            headers: { Authorization: `Bearer ${token_data}` }
+        };
+
+        const data = {
+            "id": params.row.id,
+            "tax_value" : params.row.tax_value,
+            "tax_type": params.row.tax_type,
+            "Status": params.row.Status === "Active" ? "Hide" : "Active"
+        }
+        axios.post(
+            `http://34.201.114.126:8000/AdminPanel/update-Tax/${params.row.id}`,
+            data,
+            config
+        ).then(() => {
+            dispatch({ type: 'api', api: true })
+            enqueueSnackbar('City Status success !', { variant: 'success' });
+        })
+    };
+
+
     const columns = [
         { field: 'tax_value', headerName: 'Tax Value', width: 200, editable: true, headerClassName: 'super-app-theme--header' },
         { field: 'tax_type', headerName: 'Tax Type', width: 200, editable: true, headerClassName: 'super-app-theme--header' },
@@ -60,31 +85,46 @@ export default function Tax() {
 
             if (params.formattedValue === "Active") {
                 return (
-                    <GridActionsCellItem
-
-                        index={params}
-                        icon={<h2><AiFillEye /> </h2>}
-                        label="Active"
-                        style={{ color: "#31B665 ", fontSize: 25 }}
-                        fontSize="100" >
-                    </GridActionsCellItem>
+                    <p
+                        style={{ color: "#31B665 ", fontSize: 25, cursor: "pointer" }}
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                            Submit(params);
+                        }}
+                    ><AiFillEye /> </p>
 
                 )
             }
             return (
-                <GridActionsCellItem
-                    index={params}
-                    icon={<h2><AiOutlineEyeInvisible /></h2>}
-                    label="hide"
-                    style={{ color: "#FF0000" }}
-                />
+                <p
+                    style={{ color: "red ", fontSize: 25, cursor: "pointer" }}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                        Submit(params);
+                    }}
+                ><AiOutlineEyeInvisible /></p>
+
             )
         }
      },
         { field: 'Edit', headerName: 'Edit', type: 'button', editable: true, headerClassName: 'super-app-theme--header',
         renderCell: (params) => (
             <>
-                <Box >
+                <Box
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                        '&.Mui-focused fieldset': {
+                            borderWidth: "1px",
+                            borderColor: 'black',
+                        },
+                    },
+                    '& . MuiDataGrid-root .MuiDataGrid-cell:focus': {
+                        outline: "solid #0f1010 1px"
+                    }
+                }}
+                 >
                     <Select IconComponent={BsThreeDotsVertical} labelId="demo-simple-select-error-label">
                         <MenuItem  ><TaxEdit data={params.row}></TaxEdit></MenuItem>
                         <MenuItem  >  <TexDelete data={params.row}></TexDelete></MenuItem>
@@ -129,7 +169,14 @@ export default function Tax() {
 
                         <ThemeProvider theme={CustomFontTheme}>
                             <div style={{ height: 400, width: '100%', }}>
-                                <DataGrid rows={rows} columns={columns} components={{ Toolbar: GridToolbar }} checkboxSelection />
+                                <DataGrid rows={rows} columns={columns} components={{ Toolbar: GridToolbar }} checkboxSelection
+                                  sx={{
+                                    "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+                                        outline: "1px solid black ",
+                                    },
+                                }}
+                                
+                                />
                             </div>
                         </ThemeProvider>
                         </Box>

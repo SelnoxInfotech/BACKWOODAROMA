@@ -1,4 +1,4 @@
-import * as React from 'react';
+import  React ,{useContext} from 'react';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -10,6 +10,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Cookies from 'universal-cookie';
 import Axios from "axios"
 import axios from "axios"
+import InputAdornment from '@mui/material/InputAdornment';
+import Createcontext from "../../Hooks/Context/Context"
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -17,17 +19,27 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
     },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+            borderWidth: "1px",
+            borderColor: 'black',
+        },
+    },
+
 }));
 
 function BootstrapDialogTitle() {
 
 }
 export default function CityPopUp() {
+    const { dispatch } = useContext(Createcontext)
     const [open, setOpen] = React.useState(false);
-    const [Status, setStatus] = React.useState('');
+    const [Status, setStatus] = React.useState('Active');
     const [State, setState] = React.useState('');
     const [Namecountries, setNamecountries] = React.useState([]);
     const [Totel , setTotal] = React.useState([])
+    const [error, seterror] = React.useState([])
+    const [errorMassager, seterrorMassager] = React.useState()
     const cookies = new Cookies();
     const token_data = cookies.get('Token_access')
     const handleStatus = (event) => {
@@ -35,6 +47,8 @@ export default function CityPopUp() {
     };
     const handleName = (event) => {
         setNamecountries(event.target.value.toUpperCase());
+        seterrorMassager('')
+        seterror("")
 
     };
     const handleState = (event) => {
@@ -47,6 +61,9 @@ export default function CityPopUp() {
     };
     const handleClose = () => {
         setOpen(false);
+        seterror("")
+      
+        seterrorMassager('')
     };
 
     React.useEffect(() => {
@@ -58,7 +75,8 @@ export default function CityPopUp() {
 
         }).then(response => {
             setTotal(response.data)
-
+            setState(response.data[0].id)
+            
         })
     }, [token_data])
 
@@ -80,7 +98,24 @@ export default function CityPopUp() {
             config
         ).then(() => {
             setOpen(false);
-        })
+            dispatch({ type: 'api', api: true })
+        }).catch(
+            function (error) {
+                
+                if(error.response.data.CityName){
+                    
+                    seterrorMassager(error.response.data.CityName)
+                    
+                }
+                else {
+                    seterrorMassager(error.response.data.data.CityName[0])
+                    
+                    
+                }
+                seterror("red")
+                return Promise.reject(error)
+            }
+        )
     };
 
     return (
@@ -124,7 +159,29 @@ export default function CityPopUp() {
                                     </div>
                                     <div className='col'>
                                         <TextField placeholder='Add  Cities Name' id="outlined-basic" variant="outlined" value={Namecountries} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleName} />
+                                            onChange={handleName}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14  }  }}
+                                            label={errorMassager}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                },
+                                                root: {
+                                                    textTransform: "uppercase"
+                                                }
+                                            }}
+                                            />
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con  '>
@@ -192,7 +249,7 @@ export default function CityPopUp() {
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={handleClose}>
+                <Button autoFocus style={{ fontSize: 15 }} color="success" onClick={handleClose}>
                         Exit
                     </Button>
                 </DialogActions>

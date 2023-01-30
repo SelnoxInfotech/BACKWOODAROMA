@@ -15,11 +15,8 @@ import CategoryEditbox from "./CategoryEdit"
 import Eelete from "../Category/Delete";
 import { AiFillEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 export default function Category(props) {
-    const { dispatch } = useContext(Createcontext)
-
+    const { state, dispatch } = useContext(Createcontext)
     const { enqueueSnackbar } = useSnackbar();
-    const { state } = useContext(Createcontext)
-   
     const CustomFontTheme = createTheme({
         typography: {
             fontSize: 25
@@ -62,30 +59,30 @@ export default function Category(props) {
 
 
 
-     function SubmitEditData   (params)  {
-                    const form = {
+    function SubmitEditData(params) {
+        const form = {
 
-                        "name": params.row.name,
-                        "Status": params.row.Status === "Active" ? "Hide" : "Active" 
-                    }
-                    axios.post(`http://34.201.114.126:8000/AdminPanel/update-Category/${params.row.id}`, form, {
-            
-                        headers: {
-                            'Authorization': `Bearer ${token_data}`
-                        }
-            
-                    }).then(response => {
-                        if (response) {
-                            dispatch({ type: 'api', api: true })
-                            enqueueSnackbar('Edit Category Status success  !', { variant: 'success' });
-                           
-                        }
-                    }).catch(
-                        function (error) {
-                            return Promise.reject(error)
-                        }
-                    )
-                }
+            "name": params.row.name,
+            "Status": params.row.Status === "Active" ? "Hide" : "Active"
+        }
+        axios.post(`http://34.201.114.126:8000/AdminPanel/update-Category/${params.row.id}`, form, {
+
+            headers: {
+                'Authorization': `Bearer ${token_data}`
+            }
+
+        }).then(response => {
+            if (response) {
+                dispatch({ type: 'api', api: true })
+                enqueueSnackbar('Edit Category Status success  !', { variant: 'success' });
+
+            }
+        }).catch(
+            function (error) {
+                return Promise.reject(error)
+            }
+        )
+    }
     
 
 

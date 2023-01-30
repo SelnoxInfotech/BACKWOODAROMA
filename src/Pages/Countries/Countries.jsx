@@ -56,7 +56,7 @@ export default function Countries() {
         };
         const data = {
             "id" : params.row.id,
-            "CountryName": params.row.Countryname.toUpperCase(),
+            "CountryName": params.row.CountryName.toUpperCase(),
             "Status": params.row.Status === "Active" ? "Hide" : "Active"
         }
         axios.post(
@@ -74,41 +74,55 @@ export default function Countries() {
         )
     };
 
-    const columns = [
-        { field: 'CountryName', headerName: 'Country Name', width: 200, editable: true, headerClassName: 'super-app-theme--header' },
-        { field: 'Status', headerName: 'Status', type: 'action', editable: false, width: 300, headerClassName: 'super-app-theme--header',
-        renderCell: (params) => {
 
-            if (params.formattedValue === "Active") {
+    const columns = [
+        { field: 'CountryName', headerName: 'Country Name', width: 200, editable: false, headerClassName: 'super-app-theme--header' },
+        {
+            field: 'Status', headerName: 'Status', type: 'number', editable: false, headerClassName: 'super-app-theme--header', headerAlign: 'center',
+            renderCell: (params) => {
+
+                if (params.formattedValue === "Active") {
+                    return (
+                        <p
+                            style={{ color: "#31B665 ", fontSize: 25, cursor: "pointer" }}
+                            variant="contained"
+                            color="primary"
+                            onClick={() => { 
+                            Submit(params);
+                            }}
+                        ><AiFillEye /> </p>
+
+                    )
+                }
                 return (
                     <p
-                        style={{ color: "#31B665 ", fontSize: 25, cursor: "pointer" }}
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                            Submit(params);
-                        }}
-                    ><AiFillEye /> </p>
-
-                )
-            }
-            return (
-                <p
                     style={{ color: "red ", fontSize: 25, cursor: "pointer" }}
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                        Submit(params);
+                    Submit(params);
                     }}
-                ><AiOutlineEyeInvisible /></p>
+                ><AiOutlineEyeInvisible/></p>
 
-            )
-        }
-     },
+                )
+            }
+        },
         { field: 'Edit', headerName: 'Edit', type: 'button', editable: true, headerClassName: 'super-app-theme--header',
         renderCell: (params) => (
             <>
-                <Box >
+                <Box
+                 sx={{
+                    '& .MuiOutlinedInput-root': {
+                        '&.Mui-focused fieldset': {
+                            borderWidth: "1px",
+                            borderColor: 'black',
+                        },
+                    },
+                   '& . MuiDataGrid-root .MuiDataGrid-cell:focus' : {
+                        outline: "solid #0f1010 1px"
+                    }
+                }}
+                 >
                     <Select IconComponent={BsThreeDotsVertical} labelId="demo-simple-select-error-label">
                         <MenuItem ><CountryEdit data={params.row} ></CountryEdit></MenuItem>
                         <MenuItem  > <DeleteCountry data={params.row}></DeleteCountry></MenuItem>
@@ -144,19 +158,10 @@ export default function Countries() {
                             
                         <ThemeProvider theme={CustomFontTheme}>
                             <div style={{ height: 400, width: '100%', }}>
-                                <DataGrid rows={rows} columns={columns}  components={{ Toolbar: GridToolbar }}  checkboxSelection
-                                  sx={{
+                                <DataGrid rows={rows} columns={columns}  components={{ Toolbar: GridToolbar }}  
+                                sx={{
                                     "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
                                        outline: "1px solid black ",
-                                    },
-                                    height: 400,
-                                    width: '100%',
-                                    '& .MuiDataGrid-columnHeaders': {
-                                        backgroundColor: '#E1FFED',
-                                    },
-                                    '& .css-e07ewl-MuiButtonBase-root-MuiButton-root': {
-                                        color: '#000000',
-                                        display: "flex",
                                     },
                                  }}
                                 />

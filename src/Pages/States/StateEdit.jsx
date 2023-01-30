@@ -10,8 +10,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Cookies from 'universal-cookie';
 import Axios from "axios"
 import axios from "axios"
-import { useSnackbar } from 'notistack';
 import Createcontext from "../../Hooks/Context/Context"
+import InputAdornment from '@mui/material/InputAdornment';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -19,21 +19,28 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
     },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+            borderWidth: "1px",
+            borderColor: 'black',
+        },
+    },
 }));
 
 function BootstrapDialogTitle(props) {
 
 }
 export default function StateEdit(props) {
-    const { enqueueSnackbar } = useSnackbar();
     const cookies = new Cookies();
     const token_data = cookies.get('Token_access')
     const { dispatch } = useContext(Createcontext)
     const [open, setOpen] = React.useState(false);
     const [dropCountry, setCountrydorp] = React.useState([])
+    const [error, seterror] = React.useState([])
+    const [errorMassager, seterrorMassager] = React.useState()
     const [State, SetCountry] = React.useState({
         id: props.data.id,
-        StateName : props.data.StateName,
+        StateName: props.data.StateName,
         Country_id: props.data.Country_id,
         Status: props.data.Status
     });
@@ -44,12 +51,18 @@ export default function StateEdit(props) {
             ...State,
             [event.target.name]: value
         });
+        if (event.target.name === "StateName") {
+            seterrorMassager("")
+            
+        }
     };
     const handleClickOpen = () => {
         setOpen(true);
     };
     const handleClose = () => {
         setOpen(false);
+        seterrorMassager("")
+        seterror("")
     };
     useEffect(() => {
 
@@ -71,7 +84,7 @@ export default function StateEdit(props) {
 
         const data = {
             "id": State.id,
-            "StateName": State.StateName,
+            "StateName": State.StateName.toUpperCase(),
             "Country_id": State.Countryname,
             "Status": State.Status
         }
@@ -82,8 +95,23 @@ export default function StateEdit(props) {
         ).then(() => {
             setOpen(false);
             dispatch({ type: 'api', api: true })
-            enqueueSnackbar('Edit State  success !', { variant: 'success' });
-        })
+        
+        }).catch(
+            function (error) {
+                if(error.response.data.StateName){
+                    
+                    seterrorMassager(error.response.data.StateName)
+                    
+                }
+                else {
+                    seterrorMassager(error.response.data.data.StateName[0])
+                    
+                    
+                }
+                seterror("red")
+                return Promise.reject(error)
+            }
+        )
     };
     return (
         <div>
@@ -102,6 +130,7 @@ export default function StateEdit(props) {
                             maxWidth: "none",  // Set your width here
                         },
                     },
+                   
                 }}
             >
                 <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
@@ -119,15 +148,37 @@ export default function StateEdit(props) {
                                     </h2>
                                     </div>
                                 </div>
-                                <div className='col-12 top label  con margn_top '>
+                                <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
                                             State Name:
                                         </label>
                                     </div>
                                     <div className='col'>
-                                        <TextField id="outlined-basic" variant="outlined" name='StateName' value={State.StateName} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                        <TextField id="outlined-basic" variant="outlined" name='StateName' value={State.StateName.toUpperCase()} style={{ minWidth: "11vw"  }}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14  }  }}
+                                            onChange={handleChange}
+                                            label={errorMassager}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                },
+                                                root: {
+                                                    textTransform: "uppercase"
+                                                }
+                                            }}
+                                        />
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con  '>
@@ -149,7 +200,7 @@ export default function StateEdit(props) {
                                                     return (
                                                         <MenuItem value={country.id} key={index} style={{ fontSize: 15 }}>
                                                             {country.CountryName}
-                                                            </MenuItem>
+                                                        </MenuItem>
                                                     )
                                                 })
                                             }
@@ -190,7 +241,7 @@ export default function StateEdit(props) {
 
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={handleClose}>
+                    <Button autoFocus color="success" onClick={handleClose}>
                         Exit
                     </Button>
                 </DialogActions>

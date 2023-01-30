@@ -1,4 +1,4 @@
-import * as React from 'react';
+import  React ,{useContext} from 'react';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -10,6 +10,8 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Cookies from 'universal-cookie';
 import Axios from "axios"
+import Createcontext from "../../Hooks/Context/Context"
+import InputAdornment from '@mui/material/InputAdornment';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -17,25 +19,45 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
     },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+            borderWidth: "1px",
+            borderColor: 'black',
+        },
+    },
 }));
 
 function BootstrapDialogTitle(props) {
 
 }
 export default function StatePopUp() {
+    const { dispatch} = useContext(Createcontext)
     const [open, setOpen] = React.useState(false);
     const [Discounttype, setDicounttype] = React.useState([]);
-    const [Status, setStatus] = React.useState('');
+    const [Status, setStatus] = React.useState('Active');
     const [Discount, setDiscount] = React.useState([]);
+    const [error , seterror] = React.useState({
+        Discount_value:"",
+        Discount_type:""
+    }) 
+    const [massage, setmassage] = React.useState({
+        Discount_value:"",
+        Discount_type:""
+
+    })
     const handleStatus = (event) => {
         setStatus(event.target.value);
     };
     const handleChange = (event) => {
         setDicounttype(event.target.value.toUpperCase());
+        setmassage( {Discount_type:''})
+        seterror({Discount_type:''})
        
     };
     const handleName = (event) => {
         setDiscount(event.target.value.toUpperCase());
+        setmassage( {Discount_value:''})
+        seterror({Discount_value:''})
        
     };
    
@@ -44,6 +66,8 @@ export default function StatePopUp() {
     };
     const handleClose = () => {
         setOpen(false);
+        setmassage('')
+        seterror('')
     };
 
   
@@ -67,7 +91,29 @@ export default function StatePopUp() {
           config
         ).then(()=>{
             setOpen(false);
+            dispatch({type:'api',api: true})
+
+
         })
+        .catch(
+            function (error) {
+                if(error.response.data.Discount_value){
+               setmassage({Discount_value: error.response.data.Discount_value})
+               seterror({Discount_value:"red"})
+                }
+                 else if (error.response.data.Discount_type){
+                    setmassage( { Discount_type :error.response.data.Discount_type})
+                    seterror({ Discount_type:"red"})
+                }
+               
+               
+               
+               
+            
+
+                return Promise.reject(error)
+            }
+        )
     };
 
     return (
@@ -111,7 +157,26 @@ export default function StatePopUp() {
                                     </div>
                                   <div className='col'>
                                   <NumberField type="Number" placeholder='Add Discount value' id="outlined-basic" variant="outlined"   value={Discount } style={{minWidth: 190 , fontSize:15}}
-                                        onChange={handleName} />
+                                        onChange={handleName}
+                                        InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                        label={massage.Discount_value}
+                                        sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: error.Discount_value,
+                                                    height: 55,
+                                                },
+                                            },
+                                            "& label": {
+                                                fontSize: 13,
+                                                color: "red",
+                                                "&.Mui-focused": {
+                                                    marginLeft: 0,
+                                                    color: "red",
+                                                }
+                                            }
+                                        }}
+                                        />
                                   </div>
                                 </div>
                                 <div className='col-12 top label  con'>
@@ -122,7 +187,26 @@ export default function StatePopUp() {
                                    </div>
                                  <div className='col'>
                                  <TextField placeholder='Add  Discount type' id="outlined-basic" variant="outlined"   value={Discounttype}style={{minWidth: 190 , fontSize:15}}
-                                        onChange={handleChange} />
+                                        onChange={handleChange}
+                                        InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                        label={massage.Discount_type}
+                                        sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: error.Discount_type,
+                                                    height: 55,
+                                                },
+                                            },
+                                            "& label": {
+                                                fontSize: 13,
+                                                color: "red",
+                                                "&.Mui-focused": {
+                                                    marginLeft: 0,
+                                                    color: "red",
+                                                }
+                                            }
+                                        }} 
+                                        />
                                   </div>
                                 </div>
                                 <div className='col-12 top label  con'>
@@ -160,7 +244,7 @@ export default function StatePopUp() {
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={handleClose}>
+                    <Button autoFocus color='success' style={{ fontSize:15}} onClick={handleClose}>
                         Exit
                     </Button>
                 </DialogActions>

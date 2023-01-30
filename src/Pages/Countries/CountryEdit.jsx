@@ -11,6 +11,7 @@ import Cookies from 'universal-cookie';
 import Axios from "axios"
 import { useSnackbar } from 'notistack';
 import Createcontext from "../../Hooks/Context/Context"
+import InputAdornment from '@mui/material/InputAdornment';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -22,6 +23,10 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         '&.Mui-focused fieldset': {
           borderWidth: "1px",
           borderColor: 'black',
+        },
+        '& .MuiButtonBase-root': {
+            fontSize: "1.5625rem",
+            color: "#31B665"
         },
   },
 }));
@@ -39,13 +44,14 @@ export default function CountryEdit(props) {
         Countryname: props.data.CountryName.toUpperCase(),
         Status: props.data.Status
     });
-
+    const [massage, setmassage] = React.useState()
     const handleChange = (event) => {
         const value = event.target.value;
         SetCountry({
             ...Country,
             [event.target.name]: value
         });
+        setmassage('')
     };
     const handleClickOpen = () => {
         setOpen(true);
@@ -53,6 +59,7 @@ export default function CountryEdit(props) {
     const handleClose = () => {
         setOpen(false);
         seterror("")
+        setmassage('')
     };
 
     const Submit = () => {
@@ -78,10 +85,9 @@ export default function CountryEdit(props) {
             enqueueSnackbar('Edit Countries success !', { variant: 'success' });
         }).catch(
             function (error) {
-                const d = error.response.data.error
-                 const name = d.CountryName[0]
+               
+                setmassage(error.response.data.Country)
                 seterror("red")
-                enqueueSnackbar( name, { variant: 'error' });
               
 
                 return Promise.reject(error)
@@ -130,13 +136,26 @@ export default function CountryEdit(props) {
                                         </label>
                                     </div>
                                     <div className='col'>
-                                        <TextField placeholder='Country'  id="outlined-basic" variant="outlined" name='Countryname' value={Country.Countryname.toUpperCase()} style={{ minWidth: 190, fontSize: 15 }}
+                                        <TextField placeholder='Country' 
+                                        InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                         id="outlined-basic" variant="outlined" name='Countryname' value={Country.Countryname.toUpperCase()} style={{ minWidth: 190, fontSize: 15 }}
                                             onChange={handleChange}
-                                            sx={{ 
+                                            label={massage}
+                                            sx={{
                                                 '& .MuiOutlinedInput-root': {
                                                     '& fieldset': {
-                                                      borderColor:error
-                                                    },}
+                                                        borderColor: error,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
                                             }}
                                              />
                                     </div>

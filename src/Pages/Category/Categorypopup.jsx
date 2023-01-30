@@ -11,6 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Cookies from 'universal-cookie';
 import Createcontext from "../../Hooks/Context/Context"
 import InputAdornment from '@mui/material/InputAdornment';
+
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -89,7 +90,7 @@ export default function Categorypopup() {
         }).catch(
             function (error) {
                 setmassage(error.response.data.name)
-                console.log(massage)
+        
                 seterror("red")
 
 

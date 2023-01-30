@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Cookies from 'universal-cookie';
 import Axios from "axios"
 import Createcontext from "../../Hooks/Context/Context"
-import { useSnackbar } from 'notistack';
+import InputAdornment from '@mui/material/InputAdornment';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -24,6 +24,10 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
           borderWidth: "1px",
           borderColor: 'black',
         },
+        '& .MuiButtonBase-root': {
+            fontSize: "1.5625rem",
+            color: "#31B665"
+        },
   },
 }));
 
@@ -31,17 +35,19 @@ function BootstrapDialogTitle() {
 
 }
 export default function CountriesPopUp() {
-    const { enqueueSnackbar } = useSnackbar();
     const { dispatch} = useContext(Createcontext)
     const [open, setOpen] = React.useState(false);
     const [Status, setStatus] = React.useState('Active');
     const [Namecountries, setNamecountries] = React.useState('');
     const [error , seterror] = React.useState('') 
+    const [massage, setmassage] = React.useState()
     const handleStatus = (event) => {
         setStatus(event.target.value);
+
     };
     const handleName = (event) => {
         setNamecountries(event.target.value.toUpperCase());
+        setmassage('')
        
     };
    
@@ -51,6 +57,7 @@ export default function CountriesPopUp() {
     const handleClose = () => {
         setOpen(false);
         seterror("")
+        setmassage('')
     };
 
 
@@ -78,10 +85,10 @@ export default function CountriesPopUp() {
         }).catch(
             function (error) {
                 
-                const d = error.response.data.error
-                 const name = d.CountryName[0]
+                setmassage( error.response.data.Country)
+               
                 seterror("red")
-                enqueueSnackbar( name, { variant: 'error' });
+               
             
 
                 return Promise.reject(error)
@@ -130,13 +137,24 @@ export default function CountriesPopUp() {
                                     </label>
                                     </div>
                                   <div className='col'>
-                                  <TextField placeholder='Add Country Name' inputProps={{style: {fontSize: 15}}} id="outlined-basic" variant="outlined"   value={Namecountries } style={{minWidth: 190 , fontSize:15}}
+                                  <TextField placeholder='Add Country Name'InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }} id="outlined-basic" variant="outlined"   value={Namecountries } style={{minWidth: 190 , fontSize:15}}
                                         onChange={handleName}
-                                        sx={{ 
+                                        label={massage}
+                                        sx={{
                                             '& .MuiOutlinedInput-root': {
                                                 '& fieldset': {
-                                                  borderColor:error
-                                                },}
+                                                    borderColor: error,
+                                                    height: 55,
+                                                },
+                                            },
+                                            "& label": {
+                                                fontSize: 13,
+                                                color: "red",
+                                                "&.Mui-focused": {
+                                                    marginLeft: 0,
+                                                    color: "red",
+                                                }
+                                            }
                                         }}
                                          />
                                   </div>
