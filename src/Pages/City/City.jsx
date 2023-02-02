@@ -76,12 +76,13 @@ export default function City() {
         { field: 'CityName', headerName: 'City Name', width: 200, editable: true, headerClassName: 'super-app-theme--header' },
         { field: 'state_name', headerName: 'States Name', width: 200, editable: true, headerClassName: 'super-app-theme--header' },
         {
-            field: 'Status', headerName: 'Status', type: 'text', editable: true, width: 300, headerClassName: 'super-app-theme--header',
+            field: 'Status', headerName: 'Status', editable: false, width: 300, headerClassName: 'super-app-theme--header',
             renderCell: (params) => {
 
                 if (params.formattedValue === "Active") {
                     return (
                         <p
+                  
                             style={{ color: "#31B665 ", fontSize: 25, cursor: "pointer" }}
                             variant="contained"
                             color="primary"
@@ -108,6 +109,7 @@ export default function City() {
         {
             field: 'Edit', headerName: 'Edit', type: 'button', editable: true, headerClassName: 'super-app-theme--header',
             renderCell: (params) => (
+                
                 <>
                     <Box
                         sx={{
@@ -158,10 +160,9 @@ export default function City() {
                             '& .MuiDataGrid-columnHeaders': {
                                 backgroundColor: '#E1FFED',
                             },
-                            '& .css-e07ewl-MuiButtonBase-root-MuiButton-root': {
+                            '& .MuiButton-root': {
                                 color: '#000000',
                                 display: "flex",
-
                             },
 
 

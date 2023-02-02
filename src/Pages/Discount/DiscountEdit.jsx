@@ -67,7 +67,7 @@ export default function DiscountEdit(props) {
         
         SetDiscount_value({
             ...Discount_value,
-            [event.target.name]: parseInt( event.target.value )
+            [event.target.name]:  event.target.value 
 
         });
         seterrorMassager('')
@@ -89,7 +89,7 @@ export default function DiscountEdit(props) {
 
         const data = {
             "id": Discount.id,
-            "Discount_value" : Discount_value.Discount_value,
+            "Discount_value" : parseInt(Discount_value.Discount_value),
             "Discount_type": Discount.Discount_type.toUpperCase(),
             "Status": Discount.Status
         }
@@ -121,7 +121,7 @@ export default function DiscountEdit(props) {
                     
                 // }
              
-                return Promise.reject(error)
+                
             }
         )
     };
@@ -162,6 +162,7 @@ export default function DiscountEdit(props) {
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
+                                        <span className='required'>*</span>
                                         Discount value:
                                         </label>
                                     </div>
@@ -195,6 +196,7 @@ export default function DiscountEdit(props) {
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
+                                        <span className='required'>*</span>
                                         Discount type:
                                         </label>
                                     </div>

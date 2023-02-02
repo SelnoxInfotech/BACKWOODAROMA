@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React , {useContext}from 'react'
+import Createcontext from "../../Hooks/Context/Context"
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -9,7 +10,6 @@ import { createTheme } from "@mui/material/styles";
 import axios from "axios";
 import Cookies from 'universal-cookie';
 import Brandpopup from './Brandpopup';
-import { GridActionsCellItem } from '@mui/x-data-grid-pro';
 import { AiFillEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import MenuItem from '@mui/material/MenuItem';
@@ -30,8 +30,10 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 
 export default function Brand() {
     const cookies = new Cookies();
+    const { state ,dispatch} = useContext(Createcontext)
     const token_data = cookies.get('Token_access')
     const [totel, setTotal] = React.useState([])
+   
     React.useEffect(() => {
         axios("http://34.201.114.126:8000/AdminPanel/Get-Brand/", {
 
@@ -43,51 +45,99 @@ export default function Brand() {
             setTotal(response.data)
 
         })
-    }, [token_data])
+
+
+
+    }, [token_data ,state])
+
+
+ 
+    const Submit = (params) => {
+        const formdata = new FormData();
+        formdata.append('Brand_description',params.row.Brand_description);
+        formdata.append('Link',params.row.Link);
+        formdata.append("Status", params.row.Status === "Active" ? "Hide" : "Active");
+        formdata.append('name',params.row.name);
+    
+
+        const config = {
+            headers: { Authorization: `Bearer ${token_data}` }
+        };
+        axios.post(
+            `http://34.201.114.126:8000/AdminPanel/update-Brand/${params.row.id}`,
+            formdata,
+            config
+        ).then(() => {
+            
+
+            dispatch({type:'api',api: true})
+        })
+    };
+
+
+
+
     const columns = [
         {
             field: 'Brand_Logo', headerName: 'Brand Logo', editable: true, headerClassName: 'super-app-theme--header', width: 120,
             renderCell: (params) => <img src={"http://34.201.114.126:8000/" + params.value} alt="flavoursImage" width="35" height="30" />,
         },
         { field: 'name', headerName: 'Brand Name', editable: true, headerClassName: 'super-app-theme--header', width: 120 },
-        { field: 'Link', headerName: 'Link', type: 'text', editable: true, headerClassName: 'super-app-theme--header', width: 150 },
+        { field: 'Link', headerName: 'Link', editable: true, headerClassName: 'super-app-theme--header', width: 150 },
         {
-            field: 'Brand_description', headerName: 'Brand Description', type: 'text', editable: true, width: 180, headerClassName: 'super-app-theme--header',
+            field: 'Brand_description', headerName: 'Brand Description',  editable: true, width: 180, headerClassName: 'super-app-theme--header',
             renderCell: (params) => <span dangerouslySetInnerHTML={{ __html: params.formattedValue }} />
         },
-        { field: 'Status', headerName: 'Status', type: 'text', editable: true, width: 90, headerClassName: 'super-app-theme--header' ,
+        { field: 'Status', headerName: 'Status', editable: false, width: 90, headerClassName: 'super-app-theme--header' ,
         renderCell: (params) => {
 
             if (params.formattedValue === "Active") {
                 return (
-                    <GridActionsCellItem
-
-                        index={params}
-                        icon={<h2><AiFillEye /> </h2>}
-                        label="Active"
-                        style={{ color: "#31B665 ", fontSize: 25 }}
-                        fontSize="100" >
-                    </GridActionsCellItem>
+                    <p
+                        style={{ color: "#31B665 ", fontSize: 25, cursor: "pointer" }}
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                        Submit(params);
+                        }}
+                    ><AiFillEye /> </p>
 
                 )
             }
             return (
-                <GridActionsCellItem
-                    index={params}
-                    icon={<h2><AiOutlineEyeInvisible /></h2>}
-                    label="hide"
-                    style={{ color: "#FF0000" }}
-                />
+                <p
+                    style={{ color: "red ", fontSize: 25, cursor: "pointer" }}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                    Submit(params);
+                    }}
+                ><AiOutlineEyeInvisible /></p>
+
             )
         }
     },
-        { field: 'Edit', headerName: 'Edit', type: 'button', editable: true, headerClassName: 'super-app-theme--header',
+        { field: 'Edit', headerName: 'Edit', type: 'button' ,editable: true, headerClassName: 'super-app-theme--header',
         renderCell: (params) => (
+           
             <>
-                <Box >
+                <Box 
+                 sx={{
+                    '& .MuiOutlinedInput-root': {
+                        '&.Mui-focused fieldset': {
+                            borderWidth: "1px",
+                            borderColor: 'black',
+                        },
+                    },
+                    '& . MuiDataGrid-root .MuiDataGrid-cell:focus': {
+                        outline: "solid #0f1010 1px"
+                    }
+                }}
+                
+                >
                     <Select IconComponent={BsThreeDotsVertical} labelId="demo-simple-select-error-label">
-                        <MenuItem > <BrandEdit data={params.row} ></BrandEdit></MenuItem>
-                        <MenuItem  > <BrandDelete data={params.row} ></BrandDelete> </MenuItem>
+                        <MenuItem> <BrandEdit data={params.row} ></BrandEdit></MenuItem>
+                        <MenuItem> <BrandDelete data={params.row} ></BrandDelete> </MenuItem>
                     </Select>
                 </Box>
             </>
@@ -133,11 +183,10 @@ export default function Brand() {
                     '& .MuiDataGrid-columnHeaders': {
                         backgroundColor: '#E1FFED',
                     },
-                    '& .MuiButton-startIcon': {
+                    '& .MuiButton-root': {
                         color: '#000000',
-                        // display: "flex",
-
-                    },
+                        display: "flex",
+                    }
                 }}>
                 <StyledPaper sx={{ my: 11, mx: 'auto', p: 2, }}>
                     <Grid container wrap="nowrap" spacing={2}>
@@ -147,7 +196,14 @@ export default function Brand() {
                             <div className='col-12' >
                                 <ThemeProvider theme={CustomFontTheme}>
                                     <div style={{ height: 500, width: '100%', }}>
-                                        <DataGrid rows={rows} columns={columns} components={{ Toolbar: GridToolbar }} checkboxSelection />
+                                        <DataGrid rows={rows} columns={columns} components={{ Toolbar: GridToolbar }} checkboxSelection
+                                        sx={{
+                                            "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+                                                outline: "1px solid black ",
+                                            },
+                                        }}
+                                        
+                                        />
                                     </div>
                                 </ThemeProvider>
                             </div>

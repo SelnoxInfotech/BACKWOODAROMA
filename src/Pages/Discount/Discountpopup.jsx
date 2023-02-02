@@ -106,12 +106,6 @@ export default function StatePopUp() {
                     seterror({ Discount_type:"red"})
                 }
                
-               
-               
-               
-            
-
-                return Promise.reject(error)
             }
         )
     };
@@ -152,6 +146,7 @@ export default function StatePopUp() {
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
                                     <label className='label'>
+                                    <span className='required'>*</span>
                                     Discount value:
                                     </label>
                                     </div>
@@ -182,6 +177,7 @@ export default function StatePopUp() {
                                 <div className='col-12 top label  con'>
                                    <div className='col'>
                                    <label className='label'>
+                                   <span className='required'>*</span>
                                    Discount type:
                                     </label>
                                    </div>

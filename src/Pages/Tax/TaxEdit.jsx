@@ -123,7 +123,7 @@ export default function TaxEdit(props) {
                     seterror({ y: "red" })
                 }
 
-                return Promise.reject(error)
+               
             }
         )
     };
@@ -164,6 +164,7 @@ export default function TaxEdit(props) {
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
+                                        <span className='required'>*</span>
                                             Tax value:
                                         </label>
                                     </div>
@@ -197,6 +198,7 @@ export default function TaxEdit(props) {
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
+                                        <span className='required'>*</span>
                                             Tax Type:
                                         </label>
                                     </div>

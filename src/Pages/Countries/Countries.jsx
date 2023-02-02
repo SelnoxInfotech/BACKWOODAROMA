@@ -163,6 +163,10 @@ export default function Countries() {
                                     "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
                                        outline: "1px solid black ",
                                     },
+                                    '& .MuiButton-root': {
+                                        color: '#000000',
+                                        display: "flex",
+                                    },
                                  }}
                                 />
                             </div>

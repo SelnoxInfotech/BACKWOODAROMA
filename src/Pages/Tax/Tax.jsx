@@ -120,9 +120,7 @@ export default function Tax() {
                             borderColor: 'black',
                         },
                     },
-                    '& . MuiDataGrid-root .MuiDataGrid-cell:focus': {
-                        outline: "solid #0f1010 1px"
-                    }
+                   
                 }}
                  >
                     <Select IconComponent={BsThreeDotsVertical} labelId="demo-simple-select-error-label">
@@ -161,7 +159,7 @@ export default function Tax() {
                             '& .MuiDataGrid-columnHeaders': {
                                 backgroundColor: '#E1FFED',
                             },
-                            '& .css-e07ewl-MuiButtonBase-root-MuiButton-root': {
+                            '& .MuiButton-root': {
                                 color: '#000000',
                                 display: "flex",
                             },

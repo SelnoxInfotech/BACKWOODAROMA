@@ -26,7 +26,6 @@ html {
 body{
   font-size: 14px;
 }
-
 li {
   display: contents;
   list-style: none;
@@ -485,6 +484,8 @@ gap: 10px;
 }
 .editer{
   background-color: #ecebeb ;
+  height: 252px;
+    width: 500px;
 }
 
 .Sub_button{

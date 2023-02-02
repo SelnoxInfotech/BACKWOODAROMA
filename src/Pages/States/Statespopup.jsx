@@ -125,7 +125,7 @@ export default function StatePopUp() {
                     
                 }
                 seterror("red")
-                return Promise.reject(error)
+               
             }
         )
     };
@@ -165,7 +165,9 @@ export default function StatePopUp() {
                                 </div>
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
+                                        
                                     <label className='label'>
+                                    <span className='required'>*</span>
                                     States Name:
                                     </label>
                                     </div>

@@ -69,35 +69,33 @@ export default function Categorypopup() {
 
     const handlechanges = () => {
 
-        const config = {
-            headers: { Authorization: `Bearer ${token_data}` }
-        };
-
-        const data = {
-            "name": NameCategory,
-            "Status": Category
-        }
-        Axios.post(
-            'http://34.201.114.126:8000/AdminPanel/Add-Category/',
-            data,
-            config
-        ).then(() => {
-            setOpen(false);
-            setNameCategory("");
-            setCategory("Active");
-            dispatch({ type: 'api', api: true })
-            seterror("")
-        }).catch(
-            function (error) {
-                setmassage(error.response.data.name)
         
-                seterror("red")
-
-
-
-                return Promise.reject(error)
+            const config = {
+                headers: { Authorization: `Bearer ${token_data}` }
+            };
+    
+            const data = {
+                "name": NameCategory,
+                "Status": Category
             }
-        )
+            Axios.post(
+                'http://34.201.114.126:8000/AdminPanel/Add-Category/',
+                data,
+                config
+            ).then(() => {
+                setOpen(false);
+                setNameCategory("");
+                setCategory("Active");
+                dispatch({ type: 'api', api: true })
+                seterror("")
+            }).catch(
+                function (error) {
+                    setmassage(error.response.data.name)
+                    seterror("red")
+    
+                }
+            )
+        
     };
 
     return (

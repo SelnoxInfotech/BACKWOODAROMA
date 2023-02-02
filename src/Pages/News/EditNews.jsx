@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext ,useRef } from 'react';
 
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
@@ -16,6 +16,8 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { EditorState } from 'draft-js';
 import { convertToHTML } from 'draft-convert';
 import { MdFileUpload } from 'react-icons/md';
+import Createcontext from "../../Hooks/Context/Context"
+import InputAdornment from '@mui/material/InputAdornment';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -24,12 +26,23 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
     },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+            borderWidth: "1px",
+            borderColor: 'black',
+        },
+        '& .MuiButtonBase-root': {
+            fontSize: "1.5625rem",
+            color: "#31B665"
+        },
+    },
 }));
 
 function BootstrapDialogTitle(props) {
 
 }
 export default function NewsEdit(props) {
+    const { dispatch } = useContext(Createcontext)
     const [open, setOpen] = React.useState(false);
     const cookies = new Cookies();
     const token_data = cookies.get('Token_access')
@@ -38,6 +51,7 @@ export default function NewsEdit(props) {
     const [Category, SetCategory] = React.useState([])
     const [SubCategory, SetSubCategory] = React.useState([])
     const [Image, SetImage] = React.useState('')
+    const inputRef = useRef(null);
     const [News, setNews] = React.useState({
         Title: props.data.Title,
         Category_id: props.data.Category_id,
@@ -48,9 +62,34 @@ export default function NewsEdit(props) {
         SubCategory_id: props.data.SubCategory_id,
         Url_slug: props.data.Url_slug,
         Alt_Text: props.data.Alt_Text,
-        Image:props.data.Image
+        Image: props.data.Image,
+        
 
     });
+
+    const [error, seterror] = React.useState({
+        Title: "",
+        Image: " ",
+        Meta_Description: "",
+        Url_slug: "",
+        Meta_title: "",
+        Alt_Text: "",
+        Link: ""
+
+    })
+    const [massage, setmassage] = React.useState({
+        Title: "",
+        Image: "",
+        Meta_Description: "",
+        Url_slug: "",
+        Meta_title: "",
+        Alt_Text: "",
+        Link: ""
+    })
+
+
+
+
     React.useEffect(() => {
         let html = convertToHTML(editorState.getCurrentContent());
         setConvertedContent(html);
@@ -66,11 +105,17 @@ export default function NewsEdit(props) {
             ...News,
             [event.target.name]: value
         });
-    }
-
+        setmassage('')
+        seterror('')
+    };
+    const resetFileInput = () => {
+        // resetting the input value
+        inputRef.current.value = null;
+        SetImage(null)
+      };
     const handleClickOpen = () => {
         setOpen(true);
-        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+
     };
     const handleClose = () => {
         setOpen(false);
@@ -105,7 +150,6 @@ export default function NewsEdit(props) {
 
     }, [token_data])
 
-
     const formdata = new FormData();
     formdata.append('Title', News.Title);
     formdata.append('Category_id', News.Category_id);
@@ -116,12 +160,22 @@ export default function NewsEdit(props) {
     formdata.append('SubCategory_id', News.SubCategory_id);
     formdata.append('Url_slug', News.Url_slug);
     formdata.append('Alt_Text', News.Alt_Text);
-    formdata.append('Image', Image);
+    if(News.Image==="")
+    {
+        formdata.append('Image',News.Image );
+    }
+    Image && formdata.append('Image', Image );
+
+
+
     formdata.append('Description', convertedContent);
     formdata.append('Url_slug', News.Url_slug)
     const Submit = () => {
         const config = {
-            headers: { Authorization: `Bearer ${token_data}` }
+            headers: {
+                Authorization: `Bearer ${token_data}`,
+                'Content-Type': 'multipart/form-data'
+            }
         };
         Axios.post(
             `http://34.201.114.126:8000/AdminPanel/update-News/${props.data.id}`,
@@ -129,7 +183,51 @@ export default function NewsEdit(props) {
             config
         ).then(() => {
             setOpen(false);
+            dispatch({ type: 'api', api: true })
         })
+            .catch(
+
+                function (error) {
+
+                    if (error.response.data.error) {
+                        setmassage({ Link: error.response.data.error.Link[0] })
+                        seterror({ Link: "red" })
+                    }
+                    for (const [key, value] of Object.entries(error.response.data)) {
+
+                        switch (key) {
+                            case "Title":
+                                setmassage({ Title: value })
+                                seterror({ Title: "red" })
+                                break
+                            case "Image":
+                                setmassage({ Image: value })
+                                seterror({ Image: "red" })
+                                break
+                            case "Meta_Description":
+                                setmassage({ Meta_Description: value })
+                                seterror({ Meta_Description: "red" })
+                                break
+                            case "Url_slug":
+                                setmassage({ Url_slug: value })
+                                seterror({ Url_slug: "red" })
+                                break
+                            case "Meta_title":
+                                setmassage({ Meta_title: value })
+                                seterror({ Meta_title: "red" })
+                                break
+                            case "Alt_Text":
+                                setmassage({ Alt_Text: value })
+                                seterror({ Alt_Text: "red" })
+                                break
+
+                            default:
+                                return 'foo';
+                        }
+                    }
+
+                }
+            )
     };
 
     const file = document.querySelector('#file');
@@ -188,8 +286,29 @@ export default function NewsEdit(props) {
                                         </label>
                                     </div>
                                     <div className='col-10 '>
-                                        <TextField type="Text" placeholder=' Title' id="outlined-basic" name='Title' variant="outlined" value={News.Title} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                        <TextField type="Text" placeholder=' Title' id="outlined-basic" name='Title' variant="outlined" value={News.Title.toUpperCase()} style={{ minWidth: 190, fontSize: 15 }}
+                                            onChange={handleChange}
+
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            label={massage.Title}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error.Title,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+
+                                        />
                                     </div>
                                 </div>
                                 <div className='col-12 top  Add_Category_pop  con  '>
@@ -199,8 +318,27 @@ export default function NewsEdit(props) {
                                         </label>
                                     </div>
                                     <div className='col-10 '>
-                                        <TextField type="Text" placeholder='Meta Title' id="outlined-basic" name='Meta_title' variant="outlined" value={News.Meta_title} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                        <TextField type="Text" placeholder='Meta Title' id="outlined-basic" name='Meta_title' variant="outlined" value={News.Meta_title.toUpperCase()} style={{ minWidth: 190, fontSize: 15 }}
+                                            onChange={handleChange}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            label={massage.Meta_title}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error.Meta_title,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+                                        />
                                     </div>
                                 </div>
                                 <div className='col-12 top   Add_Category_pop'>
@@ -221,16 +359,12 @@ export default function NewsEdit(props) {
                                                 <em>Select option</em>
                                             </MenuItem>
                                             {
-                                                Category.map((Category) => {
+                                                Category.map((Category, index) => {
                                                     return (
-
-                                                        <MenuItem value={Category.id} style={{ fontSize: 15 }}>{Category.name}</MenuItem>
-
+                                                        <MenuItem value={Category.id} style={{ fontSize: 15 }} key={index} >{Category.name}</MenuItem>
                                                     )
-
                                                 })
                                             }
-
                                         </Select>
                                     </div>
                                 </div>
@@ -252,10 +386,10 @@ export default function NewsEdit(props) {
                                                 <em>Select option</em>
                                             </MenuItem>
                                             {
-                                                SubCategory.map((SubCategory) => {
+                                                SubCategory.map((SubCategory, index) => {
                                                     return (
 
-                                                        <MenuItem value={SubCategory.id} style={{ fontSize: 15 }}>{SubCategory.name}</MenuItem>
+                                                        <MenuItem value={SubCategory.id} style={{ fontSize: 15 }} key={index}>{SubCategory.name}</MenuItem>
 
                                                     )
 
@@ -300,21 +434,33 @@ export default function NewsEdit(props) {
                                         <div className=' col-2 image_uploade center'>
 
                                             <div className='top MdFileUpload'>
-                                               
+
 
                                                 {
-                                                    Image ? <img src={URL.createObjectURL(Image)} alt="" style={{ width: "90px", height: "81px", borderRadius: "10px" }} /> :
+                                                    Image ?
+                                                        <div style={{display : "flex"}}>
+                                                        <img src={URL.createObjectURL(Image)} alt="" style={{ width: "90px", height: "81px", borderRadius: "10px" }} />
+                                                            <Button onClick={resetFileInput} color='success' >Cancell </Button>
+                                                            
+                                                            </div>
 
-                                                    (
-                                                      News.Image?  <img src={"http://34.201.114.126:8000/" + (News.Image)} alt="" style={{ width: "90px", height: "81px", borderRadius: "10px" }} /> :
-                                                      <MdFileUpload style={{backgroundColor:"#31B665" , borderradius: "66px"}} ></MdFileUpload > 
-                                                    )
-                                                    
+                                                        :
+
+                                                        (
+                                                            News.Image!=="" ?
+                                                                <div style={{display : "flex"}}>
+                                                                    <img src={"http://34.201.114.126:8000/" + (News.Image)} alt="" style={{ width: "90px", height: "81px", borderRadius: "10px" }} />
+                                                                    <Button name="Image" value="" onClick={handleChange} color='success' >Cancell </Button>
+                                                                </div>
+                                                                :
+                                                                <MdFileUpload style={{ backgroundColor: "#31B665", borderradius: "66px" }} ></MdFileUpload >
+                                                        )
+
                                                 }
                                             </div>
                                             <div className='col-12 center  top Sku'>
                                                 <div className="file-input">
-                                                    <input type="file" id="file" className="file" onChange={handleimage} />
+                                                    <input type="file" id="file" ref={inputRef} className="file" onChange={handleimage} />
                                                     <label htmlFor="file"  >
                                                         UPLOAD
                                                         <p className="file-name"></p>
@@ -334,7 +480,27 @@ export default function NewsEdit(props) {
                                     </div>
                                     <div className='col-10 '>
                                         <TextField type="text" placeholder='Add Alt Text' name='Alt_Text' value={News.Alt_Text} id="outlined-basic" variant="outlined" style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                            onChange={handleChange}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            label={massage.Alt_Text}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error.Alt_Text,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+
+                                        />
                                     </div>
                                 </div>
                                 <div className='col-12 top  Add_Category_pop '>
@@ -345,7 +511,26 @@ export default function NewsEdit(props) {
                                     </div>
                                     <div className='col-10 '>
                                         <TextField type="Text" placeholder='Add Link' name='Link' value={News.Link} id="outlined-basic" variant="outlined" style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                            onChange={handleChange}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            label={massage.Link}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error.Link,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+                                        />
                                     </div>
                                 </div>
                                 <div className='col-12 top  Add_Category_pop '>
@@ -356,7 +541,26 @@ export default function NewsEdit(props) {
                                     </div>
                                     <div className='col-10 '>
                                         <TextField type="Text" placeholder=' Url slug' name='Url_slug' value={News.Url_slug} id="outlined-basic" variant="outlined" style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                            onChange={handleChange}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            label={massage.Url_slug}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error.Url_slug,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+                                        />
                                     </div>
                                 </div>
                                 <div className='col-12 top  Add_Category_pop  con  '>
@@ -366,8 +570,27 @@ export default function NewsEdit(props) {
                                         </label>
                                     </div>
                                     <div className='col-10 '>
-                                        <TextField type="Text" placeholder='Meta Description' id="outlined-basic" name='Meta_Description' variant="outlined" value={News.Meta_Description} style={{ minWidth: 400, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                        <TextField type="Text" placeholder='Meta Description' id="outlined-basic" name='Meta_Description' variant="outlined" value={News.Meta_Description.toUpperCase()} style={{ minWidth: 400, fontSize: 15 }}
+                                            onChange={handleChange}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            label={massage.Meta_Description}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error.Meta_Description,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+                                        />
                                     </div>
                                 </div>
                                 <div className='col-12 top  Add_Category_pop  '>

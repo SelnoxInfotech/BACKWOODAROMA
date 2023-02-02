@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -9,12 +9,20 @@ import Cookies from 'universal-cookie';
 import Axios from "axios"
 import Createcontext from "../../Hooks/Context/Context"
 import { useSnackbar } from 'notistack';
+import InputAdornment from '@mui/material/InputAdornment';
+
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
     },
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
+    },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+            borderWidth: "1px",
+            borderColor: 'black',
+        },
     },
 }));
 
@@ -24,36 +32,64 @@ function BootstrapDialogTitle(props) {
 export default function FlavoursEdit(props) {
     const { enqueueSnackbar } = useSnackbar();
     const cookies = new Cookies();
-    const [image, SetImage] = React.useState('');
+    const inputRef = useRef(null);
     const token_data = cookies.get('Token_access')
     const { dispatch } = useContext(Createcontext)
     const [open, setOpen] = React.useState(false);
+    const [error, seterror] = React.useState({
+        flavour_Name: "",
+        Price: ""
+    })
+    const [massage, setmassage] = React.useState({
+        flavour_Name: "",
+        Price: ""
+
+    })
+
     const [Flavour, SetFlavour] = React.useState({
         id: props.data.id,
         FlavoursImage: props.data.FlavoursImage,
         flavour_Name: props.data.flavour_Name,
-        Price : props.data.Price,
+        Price: props.data.Price,
     });
+    const [image, SetImage] = React.useState('');
+
     const handleChange = (event) => {
-        const value = event.target.value 
+        const value = event.target.value
         SetFlavour({
             ...Flavour,
             [event.target.name]: value
         });
+        setmassage({ flavour_Name: "" })
+        seterror({ flavour_Name: "" })
+
     };
-   
+
+
     const handleClickOpen = () => {
         setOpen(true);
     };
     const handleClose = () => {
         setOpen(false);
+        setmassage({ flavour_Name: "" })
+        seterror({ flavour_Name: "" })
     };
-  
-    const formdata = new FormData();
-    formdata.append('FlavoursImage',image);
-    formdata.append("flavour_Name",Flavour.flavour_Name);
-    formdata.append("Price", Flavour.Price);
 
+    const resetFileInput = () => {
+        // resetting the input value
+        inputRef.current.value = null;
+        SetImage(null)
+    };
+
+
+    console.log(Flavour.FlavoursImage)
+    const formdata = new FormData();
+    if (Flavour.FlavoursImage === "") {
+        formdata.append('FlavoursImage', Flavour.FlavoursImage)
+    }
+    image && formdata.append('FlavoursImage', image)
+    formdata.append("flavour_Name", Flavour.flavour_Name);
+    formdata.append("Price", Flavour.Price);
 
     const Submit = () => {
         const config = {
@@ -63,17 +99,34 @@ export default function FlavoursEdit(props) {
         Axios.post(
             `http://34.201.114.126:8000/AdminPanel/update-Flavours/${Flavour.id}`,
             formdata,
-            config
+            config,
+            { headers: { "Content-Type": "multipart/form-data" } }
+
         ).then(() => {
             setOpen(false);
             dispatch({ type: 'api', api: true })
-            enqueueSnackbar('Edit Discount success !', { variant: 'success' });
-        
+            enqueueSnackbar('Edit Flavour success !', { variant: 'success' });
+
         })
+            .catch(
+                function (error) {
+                    if (error.response.data.flavour_Name) {
+                        setmassage({ flavour_Name: error.response.data.flavour_Name })
+                        seterror({ flavour_Name: "red" })
+                    }
+                    else if (error.response.data.Price) {
+                        setmassage({ Price: error.response.data.Price })
+                        seterror({ Price: "red" })
+                    }
+
+
+                }
+            )
     };
     const handleimage = (event) => {
         SetImage(event.target.files[0])
     };
+
     return (
         <div>
             <Button color='success' onClick={handleClickOpen}>
@@ -111,39 +164,85 @@ export default function FlavoursEdit(props) {
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
-                                        Flavour Name:
+                                            <span className='required'>*</span>
+                                            Flavour Name:
                                         </label>
                                     </div>
                                     <div className='col'>
-                                    <TextField type="text" id="outlined-basic" variant="outlined" name='flavour_Name' value={Flavour.flavour_Name} style={{ minWidth: 190, fontSize: 15 }}
-                                           onChange={handleChange}  />
-                                   
+                                        <TextField type="text" id="outlined-basic" variant="outlined" name='flavour_Name' value={Flavour.flavour_Name} style={{ minWidth: 190, fontSize: 15 }}
+                                            onChange={handleChange}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            label={massage.flavour_Name}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error.flavour_Name,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+                                        />
+
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
-                                        Flavour Price:
+                                            <span className='required'>*</span>
+                                            Flavour Price:
                                         </label>
                                     </div>
                                     <div className='col'>
-                                    <TextField   type="number" id="outlined-basic" variant="outlined"  name='Price' value={Flavour.Price} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                        <TextField type="number" id="outlined-basic" variant="outlined" name='Price' value={Flavour.Price} style={{ minWidth: 190, fontSize: 15 }}
+                                            onChange={handleChange}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            label={massage.Price}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error.Price,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+                                        />
                                     </div>
                                 </div>
-                               
+
                                 <div className='col-12 top label  con'>
                                     <div className='col'>
                                         <label className='label'>
-                                        Change Image:
+                                            Change Image:
                                         </label>
                                     </div>
                                     <div className='col'>
-                                      {
-                                        image ?<img src={URL.createObjectURL(image)} alt="" style={{ width: "120px", height: "110px" }} /> :<img src={ "http://34.201.114.126:8000/" + Flavour.FlavoursImage } alt="" style={{ width: "120px", height: "110px" }}/>
-                                      }
-                                      <input  type="file" id="formFile" accept="image/*" inputProps={{ style: { fontSize: 15 } }} variant="outlined" style={{ Width: "10%", fontSize: 15 }}
-                                         onChange={handleimage}
+                                        {
+                                            image ? <> <img src={URL.createObjectURL(image)} alt="" style={{ width: "120px", height: "110px" }} />
+                                                <Button onClick={resetFileInput} color='success' >Cancell </Button></>
+                                                :
+                                                <>
+                                                    <img src={"http://34.201.114.126:8000/" + Flavour.FlavoursImage} alt="" style={{ width: "120px", height: "110px" }} />
+                                                    <Button name="FlavoursImage" value="" color='success' onClick={handleChange} >Cancell </Button>
+                                                </>
+                                        }
+                                        <input type="file" ref={inputRef} id="formFile" accept="image/*" variant="outlined" style={{ Width: "10%", fontSize: 15 }}
+                                            onChange={handleimage}
                                         />
 
                                     </div>
@@ -162,7 +261,7 @@ export default function FlavoursEdit(props) {
 
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={handleClose}>
+                    <Button autoFocus color='success' onClick={handleClose}>
                         Exit
                     </Button>
                 </DialogActions>

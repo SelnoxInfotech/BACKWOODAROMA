@@ -63,7 +63,19 @@ export default function NewsCategory(props) {
             field: 'Edit', headerName: 'Edit', type: 'button', editable: false, headerClassName: 'super-app-theme--header', headerAlign: 'center',
             renderCell: (params) => (
                 <>
-                    <Box >
+                    <Box
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            '&.Mui-focused fieldset': {
+                                borderWidth: "1px",
+                                borderColor: 'black',
+                            },
+                        },
+                        '& . MuiDataGrid-root .MuiDataGrid-cell:focus': {
+                            outline: "solid #0f1010 1px"
+                        }
+                    }}
+                     >
                         <Select IconComponent={BsThreeDotsVertical} labelId="demo-simple-select-error-label">
                             <MenuItem  > <NewsCategoryEditbox data={params.row}></NewsCategoryEditbox></MenuItem>
                             <MenuItem  > <NewsCategoryDelete data={params.row}></NewsCategoryDelete></MenuItem>
@@ -109,7 +121,13 @@ export default function NewsCategory(props) {
                         }}>
                             <ThemeProvider theme={CustomFontTheme}>
                                 <div style={{ height: 400, width: '100%' }}>
-                                    <DataGrid rows={rows} columns={columns} components={{ Toolbar: GridToolbar, }} />
+                                    <DataGrid rows={rows} columns={columns} components={{ Toolbar: GridToolbar, }}
+                                    sx={{
+                                        "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+                                            outline: "1px solid black ",
+                                        },
+                                    }}
+                                    />
                                 </div>
                             </ThemeProvider>
                         </Box>

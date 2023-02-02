@@ -114,7 +114,7 @@ export default function Taxpop() {
                     seterror({ y: "red" })
                 }
 
-                return Promise.reject(error)
+              
             }
         )
     };
@@ -155,6 +155,7 @@ export default function Taxpop() {
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
+                                        <span className='required'>*</span>
                                             Tax Value:
                                         </label>
                                     </div>
@@ -188,6 +189,7 @@ export default function Taxpop() {
                                 <div className='col-12 top label  con'>
                                     <div className='col'>
                                         <label className='label'>
+                                        <span className='required'>*</span>
                                             Tax Type:
                                         </label>
                                     </div>

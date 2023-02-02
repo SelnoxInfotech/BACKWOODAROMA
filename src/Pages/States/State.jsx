@@ -80,9 +80,9 @@ export default function State() {
     
 
     const columns = [
-        { field: 'StateName', headerName: 'States Name', width: 200, editable: true, headerClassName: 'super-app-theme--header' },
-        { field: 'country_name', headerName: 'Country Name', width: 200, editable: true, headerClassName: 'super-app-theme--header' },
-        { field: 'Status', headerName: 'Status', type: 'text', editable: true, width: 300, headerClassName: 'super-app-theme--header',
+        { field: 'StateName', headerName: 'States Name', width: 200, editable: false, headerClassName: 'super-app-theme--header' },
+        { field: 'country_name', headerName: 'Country Name', width: 200, editable: false, headerClassName: 'super-app-theme--header' },
+        { field: 'Status', headerName: 'Status',  editable: false, width: 300, headerClassName: 'super-app-theme--header',
         renderCell: (params) => {
 
             if (params.formattedValue === "Active") {
@@ -111,7 +111,7 @@ export default function State() {
             )
         }
      },
-        { field: 'Edit', headerName: 'Edit', type: 'button', editable: true, headerClassName: 'super-app-theme--header',
+        { field: 'Edit', headerName: 'Edit', editable: false, headerClassName: 'super-app-theme--header',
         renderCell: (params) => (
             <>
                 <Box
@@ -163,12 +163,10 @@ export default function State() {
                     '& .MuiDataGrid-columnHeaders': {
                         backgroundColor: '#E1FFED',
                     },
-                    '& .css-e07ewl-MuiButtonBase-root-MuiButton-root': {
+                    '& .MuiButton-root': {
                         color: '#000000',
                         display: "flex",
-
                     },
-                    
                     
                 }}
                     >

@@ -8,12 +8,23 @@ import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
 import Cookies from 'universal-cookie';
 import Createcontext from "../../../Hooks/Context/Context"
+import InputAdornment from '@mui/material/InputAdornment';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
     },
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
+    },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+            borderWidth: "1px",
+            borderColor: 'black',
+        },
+    },
+    '& .MuiButtonBase-root': {
+        fontSize: "1.5625rem",
+        color: "#31B665"
     },
 }));
 
@@ -25,7 +36,11 @@ export default function NewsCategorypopup() {
     const [NameCategory, setNameCategory] = React.useState('');
     const handleName = (event) => {
         setNameCategory(event.target.value.toUpperCase());
+        setmassage("")
+         seterror("")
     };
+    const [error, seterror] = React.useState()
+    const [massage, setmassage] = React.useState()
 
 
     const handleClickOpen = () => {
@@ -33,6 +48,8 @@ export default function NewsCategorypopup() {
     };
     const handleClose = () => {
         setOpen(false);
+        setmassage("")
+        seterror("")
     };
 
     const handlechanges = () => {
@@ -54,14 +71,9 @@ export default function NewsCategorypopup() {
             dispatch({type:'api',api: true})
         }).catch(
             function (error) {
-                const arry = error.response.data.data 
-                const map = Object.entries(arry)
-                console.log(map )
-                // map.map(([data , index])=>{
-                //     console.log(data,index )
-                // })
-                
-                return Promise.reject(error)
+                setmassage(error.response.data.name)
+                seterror("red")
+
             }
         )
     };
@@ -96,12 +108,33 @@ export default function NewsCategorypopup() {
                                 <div className='col-12 top label  con'>
                                     <div className='col'>
                                         <label className='label'>
-                                            Name*:
+                                        <span className='required'>*</span>
+                                            Name:
                                         </label>
                                     </div>
                                     <div className='col'>
                                         <TextField placeholder='Add Category' id="outlined-basic" variant="outlined" value={NameCategory || ""}
-                                            onChange={handleName} style={{ minWidth: 190, fontSize: 15, }} />
+                                            onChange={handleName} style={{ minWidth: 190, fontSize: 15, }} 
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            label={massage}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+                                            
+                                            />
                                     </div>
                                 </div>
                               

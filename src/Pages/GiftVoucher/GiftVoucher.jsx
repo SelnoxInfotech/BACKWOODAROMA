@@ -79,8 +79,9 @@ export default function Gift_Voucher() {
     const CustomFontTheme = createTheme({
         typography: {
             fontSize: 25,
-            colors: "#31B665"
+           
         },
+      
         components: {
             MuiContainer: {
                 styleOverrides: {
@@ -110,9 +111,14 @@ export default function Gift_Voucher() {
                     '& .MuiDataGrid-columnHeaders': {
                         backgroundColor: '#E1FFED',
                     },
-                    '& .css-e07ewl-MuiButtonBase-root-MuiButton-root': {
+                    '& .MuiButton-root': {
                         color: '#000000',
                         display: "flex",
+                    },
+                    '& .MuiButton-startIcon': {
+                        color: '#000000',
+                        // display: "flex",
+
                     },
                 }}>
                     <StyledPaper sx={{ my: 11, mx: 'auto', p: 2, }}>

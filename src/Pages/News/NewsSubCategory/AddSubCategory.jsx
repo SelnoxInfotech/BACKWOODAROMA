@@ -11,13 +11,23 @@ import Cookies from 'universal-cookie';
 import axios from "axios"
 import Axios from "axios"
 import Createcontext from "../../../Hooks/Context/Context"
-
+import InputAdornment from '@mui/material/InputAdornment';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
     },
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
+    },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+            borderWidth: "1px",
+            borderColor: 'black',
+        },
+    },
+    '& .MuiButtonBase-root': {
+        fontSize: "1.5625rem",
+        color: "#31B665"
     },
 }));
 
@@ -29,7 +39,9 @@ export default function AddNewsCategory() {
     const [open, setOpen] = React.useState(false);
     const [SubCategory, setSubCategory] = React.useState([]);
     const [Category, setCategory] = React.useState([]);
-    
+    const [error, seterror] = React.useState()
+    const [massage, setmassage] = React.useState()
+
     const [NameCategory, setNameCategory] = React.useState([]);
  
     const handleChange = (event) => {
@@ -38,7 +50,8 @@ export default function AddNewsCategory() {
     };
     const handleName = (event) => {
         setNameCategory(event.target.value.toUpperCase());
-       
+        setmassage("")
+        seterror("")
     };
    
     const handleClickOpen = () => {
@@ -46,6 +59,8 @@ export default function AddNewsCategory() {
     };
     const handleClose = () => {
         setOpen(false);
+        setmassage("")
+        seterror("")
     };
 
     React.useEffect(() => {
@@ -86,7 +101,13 @@ export default function AddNewsCategory() {
         ).then(()=>{
             setOpen(false);
             dispatch({type:'api',api: true})
-        })
+        }).catch(
+            function (error) {
+                setmassage(error.response.data.name)
+                seterror("red")
+
+            }
+        )
     };
 
     return (
@@ -130,7 +151,26 @@ export default function AddNewsCategory() {
                                     </div>
                                   <div className='col'>
                                   <TextField placeholder='Add  Sub Category' id="outlined-basic" variant="outlined"   value={NameCategory } style={{minWidth: 190 , fontSize:15}}
-                                        onChange={handleName} />
+                                        onChange={handleName}
+                                        InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                        label={massage}
+                                        sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: error,
+                                                    height: 55,
+                                                },
+                                            },
+                                            "& label": {
+                                                fontSize: 13,
+                                                color: "red",
+                                                "&.Mui-focused": {
+                                                    marginLeft: 0,
+                                                    color: "red",
+                                                }
+                                            }
+                                        }}
+                                         />
                                   </div>
                                 </div>
                                 <div className='col-12 top label  con'>

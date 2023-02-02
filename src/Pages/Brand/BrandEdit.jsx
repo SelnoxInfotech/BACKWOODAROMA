@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {useRef ,useContext} from 'react';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -14,6 +14,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { EditorState, ContentState } from 'draft-js';
 import { convertToHTML } from 'draft-convert';
 import htmlToDraft from 'html-to-draftjs';
+import Createcontext from "../../Hooks/Context/Context"
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -21,6 +22,16 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
     },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+          borderWidth: "1px",
+          borderColor: 'black',
+        },
+        '& .MuiButtonBase-root': {
+            fontSize: "1.5625rem",
+            color: "#31B665"
+        },
+  },
 }));
 
 function BootstrapDialogTitle(props) {
@@ -43,6 +54,8 @@ const getInitialState = (defaultValue) => {
 
 export default function BrandEdit(props) {
     const defaultValue = props.data.Brand_description
+    const { dispatch} = useContext(Createcontext)
+    const inputRef = useRef(null);
     const [editorState, setEditorState] = React.useState(getInitialState(defaultValue));
     const [convertedContent, setConvertedContent] = React.useState(null);
     const [open, setOpen] = React.useState(false);
@@ -67,7 +80,12 @@ export default function BrandEdit(props) {
             ...Brand,
             [event.target.name]: value
         });
+
     };
+
+   
+
+
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -75,13 +93,18 @@ export default function BrandEdit(props) {
         setOpen(false);
     };
 
-
+    const resetFileInput = () => {
+        // resetting the input value
+        inputRef.current.value = null;
+        SetImage(null)
+      };
     const formdata = new FormData();
-    formdata.append('Brand_Logo', image);
-    formdata.append('Brand_description', convertedContent);
-    formdata.append('Link', Brand.Link);
-    formdata.append('Status', Brand.Status);
-    formdata.append('name', Brand.name);
+   
+    image ? formdata.append('Brand_Logo',image) : formdata.append('Brand_Logo',Brand.Brand_Logo)  ;
+    formdata.append('Brand_description',convertedContent);
+    formdata.append('Link',Brand.Link);
+    formdata.append('Status',Brand.Status);
+    formdata.append('name',Brand.name);
    
     const Submit = () => {
         const cookies = new Cookies();
@@ -96,6 +119,8 @@ export default function BrandEdit(props) {
             config
         ).then(() => {
             setOpen(false);
+
+            dispatch({type:'api',api: true})
         })
     };
     return (
@@ -138,7 +163,7 @@ export default function BrandEdit(props) {
                                         </label>
                                     </div>
                                     <div className='col'>
-                                        <TextField type="text" placeholder='Add Brand Name' id="outlined-basic" variant="outlined" name='name' value={Brand.name} style={{ minWidth: 190, fontSize: 15 }}
+                                        <TextField type="text" placeholder='Add Brand Name' id="outlined-basic" variant="outlined" name='name' value={Brand.name} style={{ minWidth: 190 }}
                                             onChange={handleChange} />
                                     </div>
                                 </div>
@@ -165,13 +190,19 @@ export default function BrandEdit(props) {
                                     </div>
                                     <div className='col'>
 
-                                        <input type="file" onChange={handleimage} id="outlined-basic" variant="outlined" style={{ minWidth: 190, fontSize: 15 }} />
+                                        <input type="file" ref={inputRef} onChange={handleimage} id="outlined-basic" variant="outlined" style={{ minWidth: 190, fontSize: 15 }} />
                                     </div>
                                    
                                 </div>
                                 <div className='col center'>
                                         {
-                                            image ? <img src={URL.createObjectURL(image)} alt="" style={{ width: "120px", height: "110px" }} /> : <img src={"http://34.201.114.126:8000/" + (Brand.Brand_Logo)} alt="" style={{ width: "120px", height: "110px" }} />
+                                            image ?  <><img src={URL.createObjectURL(image)} alt="" style={{ width: "120px", height: "110px" }} />
+                                            <Button  onClick={resetFileInput} color='success' >Cancell </Button></>
+                                             : 
+                                             <>
+                                             <img src={"http://34.201.114.126:8000/" + (Brand.Brand_Logo)} alt="" style={{ width: "120px", height: "110px" }} />
+                                             <Button name="Brand_Logo" value="" color='success'  onClick={handleChange } >Cancell </Button>
+                                             </>
                                         }
                                     </div>
 
@@ -229,7 +260,7 @@ export default function BrandEdit(props) {
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={handleClose}>
+                    <Button autoFocus color='success' onClick={handleClose}>
                         Exit
                     </Button>
                 </DialogActions>

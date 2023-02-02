@@ -109,7 +109,7 @@ export default function StateEdit(props) {
                     
                 }
                 seterror("red")
-                return Promise.reject(error)
+               
             }
         )
     };
@@ -151,6 +151,7 @@ export default function StateEdit(props) {
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
+                                    <span className='required'>*</span>
                                             State Name:
                                         </label>
                                     </div>

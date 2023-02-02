@@ -173,7 +173,7 @@ export default function StoreEdit(props) {
                                         </label>
                                     </div>
                                     <div className='col'>
-                                        <TextField placeholder='Add  Sub Category' id="outlined-basic" variant="outlined" name='Store_Name' value={Store.Store_Name} style={{ minWidth: 190, fontSize: 15 }}
+                                        <TextField type="text" placeholder='Add  Sub Category' id="outlined-basic" variant="outlined" name='Store_Name' value={Store.Store_Name} style={{ minWidth: 190, fontSize: 15 }}
                                             onChange={handleChange} />
                                     </div>
                                 </div>
@@ -292,7 +292,7 @@ export default function StoreEdit(props) {
 
                                         <div className='col'>
                                             {
-                                                image ? <img src={URL.createObjectURL(image)} alt="" style={{ width: "120px", height: "110px" }} /> : <img src={"http://34.201.114.126:8000/" + (Store.Store_Image)} alt="" style={{ width: "120px", height: "110px" }} />
+                                                // image ? <img src={URL.createObjectURL(image)} alt="" style={{ width: "120px", height: "110px" }} /> : <img src={"http://34.201.114.126:8000/" + (Store.Store_Image)} alt="" style={{ width: "120px", height: "110px" }} />
                                             }
                                         </div>
                                     </div>

@@ -39,7 +39,7 @@ export default function DeleteNews(props) {
        }).then(response => {
         setOpen(false);
         dispatch({type:'api',api: true})
-        enqueueSnackbar(' Net Weight Delete success !', { variant: 'success' });
+        enqueueSnackbar(' News Delete success !', { variant: 'success' });
        })
    };
 
@@ -55,15 +55,15 @@ export default function DeleteNews(props) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Delete Sub Category?"}</DialogTitle>
+        <DialogTitle>{"Delete News?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
           Are you sure you want to delete this News ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={Delete}>yes</Button>
-          <Button onClick={handleClose}>no?</Button>
+        <Button onClick={Delete} sx={{ color: 'red'}}>yes</Button>
+          <Button onClick={handleClose} sx={{ color: '#31B665'}}>no?</Button>
         </DialogActions>
       </Dialog>
     </div>

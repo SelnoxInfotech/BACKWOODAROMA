@@ -90,7 +90,7 @@ export default function CountryEdit(props) {
                 seterror("red")
               
 
-                return Promise.reject(error)
+                
             }
         )
     };

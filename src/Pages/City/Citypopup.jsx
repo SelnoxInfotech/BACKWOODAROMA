@@ -113,7 +113,7 @@ export default function CityPopUp() {
                     
                 }
                 seterror("red")
-                return Promise.reject(error)
+               
             }
         )
     };
@@ -154,6 +154,7 @@ export default function CityPopUp() {
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
+                                        <span className='required'>*</span>
                                             Cities Name:
                                         </label>
                                     </div>

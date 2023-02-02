@@ -7,15 +7,16 @@ import { createTheme } from "@mui/material/styles";
 import NetWegihtPopUp from "./NetWeightpopup"
 import axios from "axios";
 import Box from '@mui/material/Box';
-import { GridActionsCellItem } from '@mui/x-data-grid-pro';
 import { AiFillEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import NetwegihtEdit from "./NetWeightEdit"
 import NetWetDelete from "./NetWeightDelete"
+import { useSnackbar } from 'notistack';
 export default function State() {
-    const { state} = useContext(Createcontext)
+    const { enqueueSnackbar } = useSnackbar()
+    const { state , dispatch} = useContext(Createcontext)
     const CustomFontTheme = createTheme({
         typography: {
             fontSize: 25,
@@ -50,6 +51,30 @@ export default function State() {
     }, [token_data,state])
 
 
+    const Submit = (params) => {
+
+
+        const config = {
+            headers: { Authorization: `Bearer ${token_data}` }
+        };
+
+        const data = {
+            
+            "Weight_type" : params.row.Weight_type.toUpperCase(),
+            "Weight_Price": params.row.Weight_Price,
+            "Status": params.row.Status ==="Active"  ? "Hide" : "Active"
+        }
+        axios.post(
+            `http://34.201.114.126:8000/AdminPanel/update-NetWeight/${params.row.id}`,
+            data,
+            config
+        ).then(() => {
+            dispatch({ type: 'api', api: true })
+            enqueueSnackbar('Edit Net Weight success !', { variant: 'success' });
+        })
+    };
+
+
     const columns = [
         { field: 'Weight_type', headerName: 'Weight type', width: 200, editable: true, headerClassName: 'super-app-theme--header' },
         { field: 'Weight_Price', headerName: 'Weight Price', width: 200, editable: true, headerClassName: 'super-app-theme--header' },
@@ -58,31 +83,46 @@ export default function State() {
 
             if (params.formattedValue === "Active") {
                 return (
-                    <GridActionsCellItem
-
-                        index={params}
-                        icon={<h2><AiFillEye /> </h2>}
-                        label="Active"
-                        style={{ color: "#31B665 ", fontSize: 25 }}
-                        fontSize="100" >
-                    </GridActionsCellItem>
+                    <p
+                        style={{ color: "#31B665 ", fontSize: 25, cursor: "pointer" }}
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                            Submit(params);
+                        }}
+                    ><AiFillEye /> </p>
 
                 )
             }
             return (
-                <GridActionsCellItem
-                    index={params}
-                    icon={<h2><AiOutlineEyeInvisible /></h2>}
-                    label="hide"
-                    style={{ color: "#FF0000" }}
-                />
+                <p
+                    style={{ color: "red ", fontSize: 25, cursor: "pointer" }}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                        Submit(params);
+                    }}
+                ><AiOutlineEyeInvisible /></p>
+
             )
         }
      },
         { field: 'Edit', headerName: 'Edit', type: 'button', editable: true, headerClassName: 'super-app-theme--header',
         renderCell: (params) => (
             <>
-                <Box >
+                <Box 
+                 sx={{
+                    '& .MuiOutlinedInput-root': {
+                        '&.Mui-focused fieldset': {
+                            borderWidth: "1px",
+                            borderColor: 'black',
+                        },
+                    },
+                   '& . MuiDataGrid-root .MuiDataGrid-cell:focus' : {
+                        outline: "solid #0f1010 1px"
+                    }
+                }}
+                 >
                     <Select IconComponent={BsThreeDotsVertical} labelId="demo-simple-select-error-label">
                         <MenuItem  > <NetwegihtEdit data={params.row}></NetwegihtEdit></MenuItem>
                         <MenuItem  > <NetWetDelete data={params.row}></NetWetDelete> </MenuItem>
@@ -119,15 +159,22 @@ export default function State() {
                             '& .MuiDataGrid-columnHeaders': {
                                 backgroundColor: '#E1FFED',
                             },
-                            '& .css-e07ewl-MuiButtonBase-root-MuiButton-root': {
+                            '& .MuiButton-root': {
                                 color: '#000000',
                                 display: "flex",
                             },
+                            
                         }}>
 
                             <ThemeProvider theme={CustomFontTheme}>
                                 <div style={{ height: 400, width: '100%', }}>
-                                    <DataGrid rows={rows} columns={columns} components={{ Toolbar: GridToolbar }} checkboxSelection />
+                                    <DataGrid rows={rows} columns={columns} components={{ Toolbar: GridToolbar }} checkboxSelection 
+                                     sx={{
+                                        "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+                                           outline: "1px solid black ",
+                                        },
+                                     }}
+                                    />
                                 </div>
                             </ThemeProvider>
                         </Box>

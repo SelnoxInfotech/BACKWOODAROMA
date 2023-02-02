@@ -165,10 +165,9 @@ export default function SubCategory() {
                             '& .MuiDataGrid-columnHeaders': {
                                 backgroundColor: '#E1FFED',
                             },
-                            '& .css-e07ewl-MuiButtonBase-root-MuiButton-root': {
+                            '& .MuiButton-root': {
                                 color: '#000000',
                                 display: "flex",
-
                             },
 
 

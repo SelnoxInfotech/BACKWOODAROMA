@@ -13,12 +13,19 @@ import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { EditorState } from 'draft-js';
 import { convertToHTML } from 'draft-convert';
+import InputAdornment from '@mui/material/InputAdornment';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
     },
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
+    },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+            borderWidth: "1px",
+            borderColor: 'black',
+        },
     },
 }));
 
@@ -33,21 +40,44 @@ export default function Storepopup() {
     const [convertedContent, setConvertedContent] = React.useState(null);
     const [image, SetImage] = React.useState('');
     const [totel, setTotal] = React.useState([])
+    const [error, seterror] = React.useState({
+        Store_Name: "",
+        Store_Address: "",
+        Stores_MobileNo: "",
+        LicenceNo: ""
+
+    })
+    const [massage, setmassage] = React.useState({
+        Store_Name: "",
+        Store_Address: "",
+        Stores_MobileNo: "",
+        LicenceNo: "",
+
+
+    })
+
+
+
     const [Store, SetStore] = React.useState({
         Store_Name: "",
-        city_name: "",
-        Store_Type: "",
+        city_id: '',
+        Store_Type: "brand",
         LicenceNo: "",
         Store_Address: "",
         Stores_Website: "",
         Stores_MobileNo: "",
-        Status: ""
+        Status: "Active"
     });
+
+
     const handleChange = (event) => {
         const value = event.target.value;
         SetStore({
             ...Store, [event.target.name]: value
         });
+        setmassage("")
+        seterror("")
+
     };
     const handleimage = (event) => {
         SetImage(event.target.files[0])
@@ -65,8 +95,9 @@ export default function Storepopup() {
     }, [editorState]);
 
 
-    
     React.useEffect(() => {
+
+
         axios("http://34.201.114.126:8000/AdminPanel/Get-Cities/", {
 
             headers: {
@@ -76,13 +107,19 @@ export default function Storepopup() {
         }).then(response => {
             setTotal(response.data)
 
+
+            SetStore(Store => ({ ...Store, city_id: response.data[0].id }))
         })
-    }, [token_data])
+
+
+    }, [token_data]);
+
+
 
     const formdata = new FormData();
     formdata.append('Store_Name', Store.Store_Name);
     formdata.append('Store_Image', image);
-    formdata.append('City_id', Store.city_name);
+    formdata.append('City_id', Store.city_id);
     formdata.append('Store_Type', Store.Store_Type);
     formdata.append('LicenceNo', Store.LicenceNo);
     formdata.append('Store_Address', Store.Store_Address);
@@ -91,11 +128,10 @@ export default function Storepopup() {
     formdata.append('Status', Store.Status);
     formdata.append('Stores_Description', convertedContent);
     const Submit = () => {
+
         const config = {
             headers: { Authorization: `Bearer ${token_data}` }
         };
-
-
         axios.post(
             'http://34.201.114.126:8000/AdminPanel/Add-Stores/',
             formdata,
@@ -104,14 +140,28 @@ export default function Storepopup() {
             setOpen(false);
         }).catch(
             function (error) {
-                // const arry = error.response.data.data 
-               
-                console.log(error.response )
-                // map.map(([data , index])=>{
-                //     console.log(data,index )
-                // })
-                
-                return Promise.reject(error)
+                for (const [key, value] of Object.entries(error.response.data)) {
+                    switch (key) {
+                        case "Store_Name":
+                            setmassage({ Store_Name: value })
+                            seterror({ Store_Name: "red" })
+                            break
+                        case "Store_Address":
+                            setmassage({ Store_Address: value })
+                            seterror({ Store_Address: "red" })
+                            break
+                        case "Stores_MobileNo":
+                            setmassage({ Stores_MobileNo: value })
+                            seterror({ Stores_MobileNo: "red" })
+                            break
+                        case "LicenceNo":
+                            setmassage({ LicenceNo: value })
+                            seterror({ LicenceNo: "red" })
+                            break
+                        default:
+                            return 'foo';
+                    }
+                }
             }
         )
     };
@@ -155,8 +205,27 @@ export default function Storepopup() {
                                         </label>
                                     </div>
                                     <div className='col'>
-                                        <TextField type="text" placeholder='Add  Store Name' id="outlined-basic" variant="outlined" name='Store_Name' value={Store.Store_Name} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                        <TextField type="text" placeholder='Add  Store Name' id="outlined-basic" variant="outlined" name='Store_Name' value={Store.Store_Name} style={{ minWidth: 190 }}
+                                            onChange={handleChange}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            label={massage.Store_Name}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error.Store_Name,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+                                        />
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con'>
@@ -168,8 +237,8 @@ export default function Storepopup() {
                                     <div className='col'>
                                         <Select
 
-                                            name='city_name'
-                                            value={Store.city_name}
+                                            name='city_id'
+                                            value={Store.city_id}
                                             onChange={handleChange}
                                             displayEmpty
                                             inputProps={{ 'aria-label': 'Without label' }} style={{ minWidth: 190, fontSize: 15 }}
@@ -200,12 +269,8 @@ export default function Storepopup() {
                                             name='Store_Type'
                                             value={Store.Store_Type}
                                             onChange={handleChange}
-                                            displayEmpty
                                             inputProps={{ 'aria-label': 'Without label' }} style={{ minWidth: 190, fontSize: 15 }}
                                         >
-                                            <MenuItem disabled value="" style={{ fontSize: 15 }}>
-                                                <em>Store Type</em>
-                                            </MenuItem>
                                             <MenuItem value={"cbd store"} style={{ fontSize: 15 }}>CBD Store</MenuItem>
                                             <MenuItem value={"brand"} style={{ fontSize: 15 }}>Brand</MenuItem>
                                             <MenuItem value={"dispensary"} style={{ fontSize: 15 }}>Dispensary</MenuItem>
@@ -225,7 +290,26 @@ export default function Storepopup() {
                                     <div className='col'>
 
                                         <TextField type="text" placeholder='Add LicenceNo' id="outlined-basic" variant="outlined" name='LicenceNo' value={Store.LicenceNo} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                            onChange={handleChange}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            label={massage.LicenceNo}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error.LicenceNo,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+                                        />
                                     </div>
                                 </div>
 
@@ -238,7 +322,26 @@ export default function Storepopup() {
                                     <div className='col'>
 
                                         <TextField type="text" placeholder='Add Store Address:' id="outlined-basic" variant="outlined" name='Store_Address' value={Store.Store_Address} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                            onChange={handleChange}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            label={massage.Store_Address}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error.Store_Address,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+                                        />
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con'>
@@ -250,7 +353,9 @@ export default function Storepopup() {
                                     <div className='col'>
 
                                         <TextField type="text" placeholder='Add Stores Website:' id="outlined-basic" variant="outlined" name='Stores_Website' value={Store.Stores_Website} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                            onChange={handleChange}
+                                            InputProps={{ style: { fontSize: 14 } }}
+                                        />
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con'>
@@ -261,8 +366,28 @@ export default function Storepopup() {
                                     </div>
                                     <div className='col'>
 
-                                        <TextField type="text" placeholder='Add Stores MobileNo:' id="outlined-basic" variant="outlined" name='Stores_MobileNo' value={Store.Stores_MobileNo} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange} />
+                                        <TextField type="text" placeholder='Add Stores MobileNo:' id="outlined-basic" variant="outlined" name='Stores_MobileNo' value={Store.Stores_MobileNo} style={{ minWidth: 190 }}
+                                            onChange={handleChange}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            label={massage.Stores_MobileNo}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error.Stores_MobileNo,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+
+                                        />
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con'>
@@ -296,12 +421,10 @@ export default function Storepopup() {
                                             name='Status'
                                             value={Store.Status}
                                             onChange={handleChange}
-                                            displayEmpty
+
                                             inputProps={{ 'aria-label': 'Without label' }} style={{ minWidth: 190, fontSize: 15 }}
                                         >
-                                            <MenuItem value="" style={{ fontSize: 15 }}>
-                                                <em>Select option</em>
-                                            </MenuItem>
+
                                             <MenuItem value={"Active"} style={{ fontSize: 15 }}>Active</MenuItem>
                                             <MenuItem value={"Hide"} style={{ fontSize: 15 }}>Hide</MenuItem>
 

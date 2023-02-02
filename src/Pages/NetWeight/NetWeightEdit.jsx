@@ -11,12 +11,19 @@ import Cookies from 'universal-cookie';
 import Axios from "axios"
 import Createcontext from "../../Hooks/Context/Context"
 import { useSnackbar } from 'notistack';
+import InputAdornment from '@mui/material/InputAdornment';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
     },
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
+    },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+            borderWidth: "1px",
+            borderColor: 'black',
+        },
     },
 }));
 
@@ -38,12 +45,23 @@ export default function NetwegihtEdit(props) {
         Weight_type: props.data.Weight_type,
         Status : props.data.Status,
     });
+    const [error , seterror] = React.useState({
+        Weight_type:"",
+        Weight_Price:""
+    }) 
+    const [massage, setmassage] = React.useState({
+        Weight_type:"",
+        Weight_Price:""
+
+    })
     const handleChange = (event) => {
         const value = event.target.value 
         SetnetWegiht({
             ...netWegiht,
-            [event.target.name]: value
+            [event.target.name]: value.toUpperCase()
         });
+        setmassage({Weight_type: ""})
+        seterror({Weight_type:""})
     };
     const handleValue = (event) => {
         
@@ -51,12 +69,16 @@ export default function NetwegihtEdit(props) {
             ...Size,
             [event.target.name]: parseInt( event.target.value )
         });
+        setmassage({Weight_Price: ""})
+        seterror({Weight_Price:""})
     };
     const handleClickOpen = () => {
         setOpen(true);
     };
     const handleClose = () => {
         setOpen(false);
+        setmassage({Weight_type: ""})
+        seterror({Weight_type:""})
     };
   
     const Submit = () => {
@@ -67,20 +89,33 @@ export default function NetwegihtEdit(props) {
         };
 
         const data = {
-            "id": netWegiht.id,
-            "Weight_type" : netWegiht.Weight_type,
+            
+            "Weight_type" : netWegiht.Weight_type.toUpperCase(),
             "Weight_Price": Size.Weight_Price,
             "Status": netWegiht.Status
         }
         Axios.post(
-            `http://34.201.114.126:8000/AdminPanel/update-NetWeight/${data.id}`,
+            `http://34.201.114.126:8000/AdminPanel/update-NetWeight/${props.data.id}`,
             data,
             config
         ).then(() => {
             setOpen(false);
             dispatch({ type: 'api', api: true })
             enqueueSnackbar('Edit Net Weight success !', { variant: 'success' });
-        })
+        }).catch(
+            function (error) {
+                if(error.response.data.Weight_type){
+               setmassage({Weight_type: error.response.data.Weight_type})
+               seterror({Weight_type:"red"})
+                }
+                 else if (error.response.data.Weight_Price){
+                    setmassage( { Weight_Price :error.response.data.Weight_Price})
+                    seterror({ Weight_Price:"red"})
+                }
+               
+                return Promise.reject(error)
+            }
+        )
     };
     return (
         <div>
@@ -119,12 +154,32 @@ export default function NetwegihtEdit(props) {
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
+                                        <span className='required'>*</span>
                                         Weight type:
                                         </label>
                                     </div>
                                     <div className='col'>
                                     <TextField type="text" id="outlined-basic" variant="outlined" name='Weight_type' value={netWegiht.Weight_type} style={{ minWidth: 190, fontSize: 15 }}
-                                           onChange={handleChange}  />
+                                           onChange={handleChange}
+                                           InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                           label={massage.Weight_type}
+                                           sx={{
+                                               '& .MuiOutlinedInput-root': {
+                                                   '& fieldset': {
+                                                       borderColor: error.Weight_type,
+                                                       height: 55,
+                                                   },
+                                               },
+                                               "& label": {
+                                                   fontSize: 13,
+                                                   color: "red",
+                                                   "&.Mui-focused": {
+                                                       marginLeft: 0,
+                                                       color: "red",
+                                                   }
+                                               }
+                                           }}
+                                           />
 
                                     
                                     </div>
@@ -132,12 +187,32 @@ export default function NetwegihtEdit(props) {
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
+                                        <span className='required'>*</span>
                                        Weight Price:
                                         </label>
                                     </div>
                                     <div className='col'>
                                     <TextField  type="number"  id="outlined-basic" variant="outlined"  name='Weight_Price' value={Size.Weight_Price} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleValue} />
+                                            onChange={handleValue}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            label={massage.Weight_Price}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error.Weight_Price,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+                                             />
                                     </div>
                                 </div>
                                
@@ -174,7 +249,7 @@ export default function NetwegihtEdit(props) {
 
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={handleClose}>
+                    <Button autoFocus color='success' onClick={handleClose}>
                         Exit
                     </Button>
                 </DialogActions>

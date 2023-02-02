@@ -79,7 +79,7 @@ useEffect(()=>{
         const data = {
             "id": city.id,
             "CityName": city.City_Name,
-            "States_id":city.States_Name,
+            "States_id":city.States_id,
             "Status": city.Status
         }
         Axios.post(
@@ -104,7 +104,7 @@ useEffect(()=>{
                     
                 }
                 seterror("red")
-                return Promise.reject(error)
+               
             }
         )
     };
@@ -145,6 +145,7 @@ useEffect(()=>{
                                 <div className='col-12 top label  con  '>
                                     <div className='col'>
                                         <label className='label'>
+                                        <span className='required'>*</span>
                                             City Name:
                                         </label>
                                     </div>
@@ -183,7 +184,7 @@ useEffect(()=>{
                                     </div>
                                     <div className='col'>
                                         <Select
-                                            name='States_Name'
+                                            name='States_id'
                                             value={city.States_id}
                                             onChange={handleChange}
                                            

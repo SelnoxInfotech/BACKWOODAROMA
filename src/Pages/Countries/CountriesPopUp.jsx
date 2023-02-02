@@ -91,7 +91,7 @@ export default function CountriesPopUp() {
                
             
 
-                return Promise.reject(error)
+                
             }
         )
     };
@@ -137,7 +137,7 @@ export default function CountriesPopUp() {
                                     </label>
                                     </div>
                                   <div className='col'>
-                                  <TextField placeholder='Add Country Name'InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }} id="outlined-basic" variant="outlined"   value={Namecountries } style={{minWidth: 190 , fontSize:15}}
+                                  <TextField placeholder='Add Country Name' InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }} id="outlined-basic" variant="outlined"   value={Namecountries } style={{minWidth: 190 , fontSize:15}}
                                         onChange={handleName}
                                         label={massage}
                                         sx={{

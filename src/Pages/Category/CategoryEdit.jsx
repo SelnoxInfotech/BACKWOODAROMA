@@ -88,7 +88,7 @@ export default function CategEditbox(props) {
                 setmassage(error.response.data.name)
               
                 set("red")
-                return Promise.reject(error)
+               
             }
         )
     }

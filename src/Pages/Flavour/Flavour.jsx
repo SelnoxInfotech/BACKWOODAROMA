@@ -59,7 +59,19 @@ export default function State() {
         { field: 'Edit', headerName: 'Edit', type: 'button', editable: true, headerClassName: 'super-app-theme--header',
         renderCell: (params) => (
             <>
-                <Box >
+                <Box 
+                 sx={{
+                    '& .MuiOutlinedInput-root': {
+                        '&.Mui-focused fieldset': {
+                            borderWidth: "1px",
+                            borderColor: 'black',
+                        },
+                    },
+                   '& . MuiDataGrid-root .MuiDataGrid-cell:focus' : {
+                        outline: "solid #0f1010 1px"
+                    }
+                }}
+                >
                     <Select IconComponent={BsThreeDotsVertical} labelId="demo-simple-select-error-label">
                         <MenuItem><FlavoursEdit data={params.row} ></FlavoursEdit></MenuItem>
                         <MenuItem> <FlavourDelete data={params.row}></FlavourDelete>  </MenuItem>
@@ -90,21 +102,27 @@ export default function State() {
                     </div>
 
                     <div className='col-12' >
-                    <Box sx={{
+                    <Box  sx={{
                             height: 400,
                             width: '100%',
                             '& .MuiDataGrid-columnHeaders': {
                                 backgroundColor: '#E1FFED',
                             },
-                            '& .css-e07ewl-MuiButtonBase-root-MuiButton-root': {
+                            '& .MuiButton-root': {
                                 color: '#000000',
                                 display: "flex",
-                            },
+                            }
                         }}>
                         <ThemeProvider theme={CustomFontTheme}>
-                            <div style={{ height: 400, width: '100%', }}>
+                            <div style={{ height: "100%", width: '100%', }}>
                             
-                                <DataGrid rows={rows} columns={columns}  components={{ Toolbar: GridToolbar }}  checkboxSelection/>
+                                <DataGrid rows={rows} columns={columns}  components={{ Toolbar: GridToolbar }}  checkboxSelection
+                                 sx={{
+                                    "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+                                       outline: "1px solid black ",
+                                    },
+                                 }}
+                                />
                             </div>
                         </ThemeProvider>
                         </Box>

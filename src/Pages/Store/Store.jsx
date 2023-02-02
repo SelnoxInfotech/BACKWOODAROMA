@@ -40,7 +40,6 @@ export default function Store() {
 
         }).then(response => {
             setTotal(response.data)
-            console.log(response.data)
 
         })
     }, [token_data ])
@@ -50,15 +49,15 @@ export default function Store() {
             renderCell: (params) => <img src={"http://34.201.114.126:8000/" + params.value} alt="flavoursImage" width="35" height="30" />,
         },
         { field: 'Store_Name', headerName: 'Store Name', editable: true, headerClassName: 'super-app-theme--header', width: 110 },
-        { field: 'city_name', headerName: 'City Name', type: 'text', editable: true, width: 130, headerClassName: 'super-app-theme--header' },
-        { field: 'Store_Address', headerName: 'Store Address', type: 'text', editable: true, headerClassName: 'super-app-theme--header', width: 150 },
+        { field: 'city_name', headerName: 'City Name',  editable: true, width: 130, headerClassName: 'super-app-theme--header' },
+        { field: 'Store_Address', headerName: 'Store Address', editable: true, headerClassName: 'super-app-theme--header', width: 150 },
         {
-            field: 'Stores_Description', headerName: 'Stores Description', type: 'text', editable: true, width: 180, headerClassName: 'super-app-theme--header',
+            field: 'Stores_Description', headerName: 'Stores Description',  editable: true, width: 180, headerClassName: 'super-app-theme--header',
             renderCell: (params) => <span dangerouslySetInnerHTML={{ __html: params.formattedValue }} />
         },
-        { field: 'Stores_Website', headerName: 'Stores Website', type: 'text', editable: true, width: 130, headerClassName: 'super-app-theme--header' },
-        { field: 'Stores_MobileNo', headerName: 'Stores MobileNo', type: 'text', editable: true, width: 150, headerClassName: 'super-app-theme--header' },
-        { field: 'Status', headerName: 'Status', type: 'text', editable: true, width: 80, headerClassName: 'super-app-theme--header',
+        { field: 'Stores_Website', headerName: 'Stores Website',  editable: true, width: 130, headerClassName: 'super-app-theme--header' },
+        { field: 'Stores_MobileNo', headerName: 'Stores MobileNo', editable: true, width: 150, headerClassName: 'super-app-theme--header' },
+        { field: 'Status', headerName: 'Status', editable: true, width: 80, headerClassName: 'super-app-theme--header',
         
         renderCell: (params) => {
 
@@ -85,7 +84,7 @@ export default function Store() {
             )
         }
     },
-        { field: 'Edit', headerName: 'Edit', type: 'button', editable: true, headerClassName: 'super-app-theme--header',
+        { field: 'Edit', headerName: 'Edit', editable: true, headerClassName: 'super-app-theme--header',
         renderCell: (params) => (
             <>
                 <Box >
@@ -131,13 +130,13 @@ export default function Store() {
 
                 </div>
             
-            <Box    x sx={{
+            <Box     sx={{
                             height: 400,
                             width: '100%',
                             '& .MuiDataGrid-columnHeaders': {
                                 backgroundColor: '#E1FFED',
                             },
-                            '& .css-e07ewl-MuiButtonBase-root-MuiButton-root': {
+                            '& .MuiButton-root': {
                                 color: '#000000',
                                 display: "flex",
                             },
