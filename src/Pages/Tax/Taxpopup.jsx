@@ -78,7 +78,7 @@ export default function Taxpop() {
         };
 
         const data = {
-            "tax_value": tax,
+            "tax_value": parseFloat(tax),
             "tax_type": type,
             "Status": Status
         }

@@ -84,10 +84,15 @@ export default function FlavoursEdit(props) {
 
     console.log(Flavour.FlavoursImage)
     const formdata = new FormData();
-    if (Flavour.FlavoursImage === "") {
-        formdata.append('FlavoursImage', Flavour.FlavoursImage)
-    }
-    image && formdata.append('FlavoursImage', image)
+    // if (Flavour.FlavoursImage !== "") {
+    //    formdata.append('FlavoursImage', image)
+    // }
+    // else{
+    //     formdata.append('FlavoursImage', Flavour.FlavoursImage)
+    // }
+
+    image ? formdata.append('FlavoursImage',image)  :  Flavour.FlavoursImage ==="" &&  formdata.append('FlavoursImage',Flavour.FlavoursImage)
+
     formdata.append("flavour_Name", Flavour.flavour_Name);
     formdata.append("Price", Flavour.Price);
 

@@ -96,11 +96,14 @@ export default function BrandEdit(props) {
     const resetFileInput = () => {
         // resetting the input value
         inputRef.current.value = null;
-        SetImage(null)
+        SetImage('')
       };
     const formdata = new FormData();
    
-    image ? formdata.append('Brand_Logo',image) : formdata.append('Brand_Logo',Brand.Brand_Logo)  ;
+    image ? formdata.append('Brand_Logo',image)  :  Brand.Brand_Logo ==="" &&  formdata.append('Brand_Logo',Brand.Brand_Logo)
+   
+        
+  
     formdata.append('Brand_description',convertedContent);
     formdata.append('Link',Brand.Link);
     formdata.append('Status',Brand.Status);

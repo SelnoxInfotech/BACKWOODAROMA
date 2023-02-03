@@ -177,7 +177,7 @@ export default function Storepopup() {
                 sx={{
                     "& .MuiDialog-container": {
                         "& .MuiPaper-root": {
-                            width: "90%",
+                            width: "70%",
                             height: "100%",
                             maxWidth: "none",  // Set your width here
                         },
@@ -199,13 +199,13 @@ export default function Storepopup() {
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con  '>
-                                    <div className='col'>
+                                    <div className='col-2'>
                                         <label className='label'>
                                             Store Name:
                                         </label>
                                     </div>
-                                    <div className='col'>
-                                        <TextField type="text" placeholder='Add  Store Name' id="outlined-basic" variant="outlined" name='Store_Name' value={Store.Store_Name} style={{ minWidth: 190 }}
+                                    <div className='col-10'>
+                                        <TextField type="text" placeholder='Add  Store Name' id="outlined-basic" variant="outlined" name='Store_Name' value={Store.Store_Name} style={{ minWidth: "90%" }}
                                             onChange={handleChange}
                                             InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
                                             label={massage.Store_Name}
@@ -229,12 +229,91 @@ export default function Storepopup() {
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con'>
-                                    <div className='col'>
+                                    <div className='col-2'>
+                                        <label className='label'>
+                                            Store Type:
+                                        </label>
+                                    </div>
+                                    <div className='col-10'>
+                                        <Select
+                                            name='Store_Type'
+                                            value={Store.Store_Type}
+                                            onChange={handleChange}
+                                            inputProps={{ 'aria-label': 'Without label' }} style={{ minWidth: "90%", fontSize: 15 }}
+                                        >
+                                            <MenuItem value={"cbd store"} style={{ fontSize: 15 }}>CBD Store</MenuItem>
+                                            <MenuItem value={"brand"} style={{ fontSize: 15 }}>Brand</MenuItem>
+                                            <MenuItem value={"dispensary"} style={{ fontSize: 15 }}>Dispensary</MenuItem>
+                                            <MenuItem value={"delivery"} style={{ fontSize: 15 }}>Delivery</MenuItem>
+                                            <MenuItem value={"doctor"} style={{ fontSize: 15 }}>Doctor</MenuItem>
+
+
+                                        </Select>
+                                    </div>
+                                </div>
+                                <div className='col-12 top label  con'>
+                                    <div className='col-2'>
                                         <label className='label'>
                                             City Name:
                                         </label>
                                     </div>
-                                    <div className='col'>
+                                    <div className='col-2'>
+                                        <Select
+
+                                            name='city_id'
+                                            value={Store.city_id}
+                                            onChange={handleChange}
+                                            displayEmpty
+                                            inputProps={{ 'aria-label': 'Without label' }} style={{ minWidth: 190, fontSize: 15 }}
+                                        >
+                                            <MenuItem disabled value="" style={{ fontSize: 15 }}>
+                                                <em>Select City</em>
+                                            </MenuItem>
+
+                                            {
+                                                totel.map((data, index) => {
+
+                                                    return (
+                                                        <MenuItem key={index} value={data.id} style={{ fontSize: 15 }}>{data.CityName}</MenuItem>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </div>
+                                    <div className='col-2'>
+                                        <label className='label'>
+                                            City Name:
+                                        </label>
+                                    </div>
+                                    <div className='col-2'>
+                                        <Select
+
+                                            name='city_id'
+                                            value={Store.city_id}
+                                            onChange={handleChange}
+                                            displayEmpty
+                                            inputProps={{ 'aria-label': 'Without label' }} style={{ minWidth: 190, fontSize: 15 }}
+                                        >
+                                            <MenuItem disabled value="" style={{ fontSize: 15 }}>
+                                                <em>Select City</em>
+                                            </MenuItem>
+
+                                            {
+                                                totel.map((data, index) => {
+
+                                                    return (
+                                                        <MenuItem key={index} value={data.id} style={{ fontSize: 15 }}>{data.CityName}</MenuItem>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </div>
+                                    <div className='col-2'>
+                                        <label className='label'>
+                                            City Name:
+                                        </label>
+                                    </div>
+                                    <div className='col-2'>
                                         <Select
 
                                             name='city_id'
@@ -259,69 +338,14 @@ export default function Storepopup() {
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con'>
-                                    <div className='col'>
-                                        <label className='label'>
-                                            Store Type:
-                                        </label>
-                                    </div>
-                                    <div className='col'>
-                                        <Select
-                                            name='Store_Type'
-                                            value={Store.Store_Type}
-                                            onChange={handleChange}
-                                            inputProps={{ 'aria-label': 'Without label' }} style={{ minWidth: 190, fontSize: 15 }}
-                                        >
-                                            <MenuItem value={"cbd store"} style={{ fontSize: 15 }}>CBD Store</MenuItem>
-                                            <MenuItem value={"brand"} style={{ fontSize: 15 }}>Brand</MenuItem>
-                                            <MenuItem value={"dispensary"} style={{ fontSize: 15 }}>Dispensary</MenuItem>
-                                            <MenuItem value={"delivery"} style={{ fontSize: 15 }}>Delivery</MenuItem>
-                                            <MenuItem value={"doctor"} style={{ fontSize: 15 }}>Doctor</MenuItem>
-
-
-                                        </Select>
-                                    </div>
-                                </div>
-                                <div className='col-12 top label  con'>
-                                    <div className='col'>
-                                        <label className='label'>
-                                            LicenceNo:
-                                        </label>
-                                    </div>
-                                    <div className='col'>
-
-                                        <TextField type="text" placeholder='Add LicenceNo' id="outlined-basic" variant="outlined" name='LicenceNo' value={Store.LicenceNo} style={{ minWidth: 190, fontSize: 15 }}
-                                            onChange={handleChange}
-                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
-                                            label={massage.LicenceNo}
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    '& fieldset': {
-                                                        borderColor: error.LicenceNo,
-                                                        height: 55,
-                                                    },
-                                                },
-                                                "& label": {
-                                                    fontSize: 13,
-                                                    color: "red",
-                                                    "&.Mui-focused": {
-                                                        marginLeft: 0,
-                                                        color: "red",
-                                                    }
-                                                }
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className='col-12 top label  con'>
-                                    <div className='col'>
+                                    <div className='col-2'>
                                         <label className='label'>
                                             Store Address:
                                         </label>
                                     </div>
-                                    <div className='col'>
+                                    <div className='col-10'>
 
-                                        <TextField type="text" placeholder='Add Store Address:' id="outlined-basic" variant="outlined" name='Store_Address' value={Store.Store_Address} style={{ minWidth: 190, fontSize: 15 }}
+                                        <TextField type="text" placeholder='Add Store Address:' id="outlined-basic" variant="outlined" name='Store_Address' value={Store.Store_Address} style={{ minWidth: "90%", fontSize: 15 }}
                                             onChange={handleChange}
                                             InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
                                             label={massage.Store_Address}
@@ -344,6 +368,39 @@ export default function Storepopup() {
                                         />
                                     </div>
                                 </div>
+
+                                <div className='col-12 top label  con'>
+                                    <div className='col-2'>
+                                        <label className='label'>
+                                            LicenceNo:
+                                        </label>
+                                    </div>
+                                    <div className='col-10'>
+
+                                        <TextField type="text" placeholder='Add LicenceNo' id="outlined-basic" variant="outlined" name='LicenceNo' value={Store.LicenceNo} style={{ minWidth: "90%", fontSize: 15 }}
+                                            onChange={handleChange}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"> </InputAdornment>, style: { fontSize: 14 } }}
+                                            label={massage.LicenceNo}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: error.LicenceNo,
+                                                        height: 55,
+                                                    },
+                                                },
+                                                "& label": {
+                                                    fontSize: 13,
+                                                    color: "red",
+                                                    "&.Mui-focused": {
+                                                        marginLeft: 0,
+                                                        color: "red",
+                                                    }
+                                                }
+                                            }}
+                                        />
+                                    </div>
+
+                                </div>
                                 <div className='col-12 top label  con'>
                                     <div className='col'>
                                         <label className='label'>
@@ -357,8 +414,7 @@ export default function Storepopup() {
                                             InputProps={{ style: { fontSize: 14 } }}
                                         />
                                     </div>
-                                </div>
-                                <div className='col-12 top label  con'>
+
                                     <div className='col'>
                                         <label className='label'>
                                             Stores MobileNo:
@@ -391,23 +447,47 @@ export default function Storepopup() {
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con'>
-                                    <div className='col '>
+                                    <div className='col-2'>
+                                        <label className='label'>
+                                            Stores Description:
+                                        </label>
+                                    </div>
+                                    <div className='col-10' >
+
+                                        <Editor
+                                            editorState={editorState}
+                                            onEditorStateChange={setEditorState}
+                                            toolbarClassName="toolbarClassName"
+                                            wrapperClassName="wrapperClassName"
+                                            editorClassName="editorClassName"
+                                        />
+                                    </div>
+                                </div>
+                                <div className='col-12 top label  con'>
+                                    <div className='col-2 '>
                                         <label className='label'>
                                             Store Image:
                                         </label>
+                                        <input type="file" placeholder='Add Store Image:' id="outlined-basic" variant="outlined" style={{ minWidth: 190, fontSize: 15 }}
+                                            onChange={handleimage} />
                                     </div>
-                                    <div className='col'>
+                                    <div className='col-10'>
                                         <div className='col'>
 
-                                            <input type="file" placeholder='Add Store Image:' id="outlined-basic" variant="outlined" style={{ minWidth: 190, fontSize: 15 }}
-                                                onChange={handleimage} />
+
                                         </div>
 
                                         <div className='col'>
                                             {
                                                 image && <img src={URL.createObjectURL(image)} alt="" style={{ width: "120px", height: "110px" }} />
                                             }
+
+
                                         </div>
+                                        <label htmlFor="file" >
+                                            <span >UPLOAD</span> <span style={{ color: "red" }}>{massage.Image}</span>
+                                            <p className="file-name"></p>
+                                        </label>
                                     </div>
                                 </div>
                                 <div className='col-12 top label  con'>
@@ -431,23 +511,7 @@ export default function Storepopup() {
                                         </Select>
                                     </div>
                                 </div>
-                                <div className='col-12 top label  con'>
-                                    <div className='col'>
-                                        <label className='label'>
-                                            Stores Description:
-                                        </label>
-                                    </div>
-                                    <div className='col'>
 
-                                        <Editor
-                                            editorState={editorState}
-                                            onEditorStateChange={setEditorState}
-                                            toolbarClassName="toolbarClassName"
-                                            wrapperClassName="wrapperClassName"
-                                            editorClassName="editorClassName"
-                                        />
-                                    </div>
-                                </div>
                                 <div className='col-12 center top' >
                                     <button className='btn Sub_button' autoFocus onClick={Submit} >
                                         Save changes
