@@ -30,6 +30,8 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 export default function NewsCategoryEditbox(props) {
+    // const defaultValue = props.data.Description
+
     const { dispatch } = useContext(Createcontext)
     const { enqueueSnackbar } = useSnackbar();
     const cookies = new Cookies();
@@ -64,7 +66,7 @@ export default function NewsCategoryEditbox(props) {
 
     }
 
-
+   
 
     function SubmitEditData() {
         const form = {

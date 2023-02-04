@@ -802,3 +802,29 @@ input:focus + label {
  
   outline: -webkit-focus-ring-color auto 2px;
 }
+
+.img_store {
+  width: 40%;
+    background: #EEEEEE;
+    height: 150px;
+    border: 2px dashed #9e9b9b;
+    padding: 57px;
+    display: inline-block;
+    justify-items: center;
+}
+.img_store1{
+  position: relative;
+  bottom: 50px;
+  cursor: pointer;
+}
+.Store_country{
+  width: 117rem;
+}
+.img_store_lince{
+  width: 20%;
+  background: #EEEEEE;
+  height: 100px;
+  border: 2px dashed #9e9b9b;
+  padding: 57px;
+  justify-items: center;
+}

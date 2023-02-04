@@ -147,7 +147,8 @@ export default function Newspop() {
 
         }).then(response => {
             SetCategory(response.data)
-            setNews(Category => ({ ...Category, Category_id: response.data[0].id }))
+            
+            setNews(Category => ({ ...Category, Category_id: response.data[0].id })) 
 
         })
 
@@ -468,8 +469,8 @@ export default function Newspop() {
                                             <div className='col-12 center  top Sku'>
                                                 <div className="file-input">
                                                     <input type="file" id="file" ref={inputRef} className="file" onChange={handleimage} />
-                                                    <label htmlFor="file" >
-                                                        <span >UPLOAD</span> <span style={{ color: "red" }}>{massage.Image}</span>
+                                                    <label htmlFor="file"  >
+                                                        <span  >UPLOAD</span> <span style={{ color: "red" }}>{massage.Image}</span>
                                                         <p className="file-name"></p>
                                                     </label>
                                                 </div>
